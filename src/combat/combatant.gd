@@ -10,6 +10,7 @@ signal stamina_changed(current: float, maximum: float)
 signal damage_taken(amount: float, critical: bool)
 signal attack_evaded()
 signal died()
+signal revived()
 
 ## ไม่ระบุในเอกสาร ตัดสินใจเอง: HP ไม่ฟื้นเอง ต้องพึ่งยา/สกิล ตามแก่นเกมเภสัชกรรม
 const MANA_REGEN_PER_SECOND_RATIO := 0.015
@@ -63,11 +64,14 @@ func _regenerate(delta: float) -> void:
 
 
 func restore_all() -> void:
+	var was_dead := not is_alive
 	current_hp = sheet.max_hp()
 	current_mana = sheet.max_mana()
 	current_stamina = sheet.max_stamina()
 	is_alive = true
 	emit_all()
+	if was_dead:
+		revived.emit()
 
 
 # --- ทรัพยากร ---

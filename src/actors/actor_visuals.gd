@@ -84,6 +84,12 @@ func play_state(state: String, blend_time: float = 0.12) -> void:
 	_animation_player.play(animation_name, blend_time)
 
 
+func revive() -> void:
+	_is_dead = false
+	_state = ""
+	play_state("idle", 0.25)
+
+
 func _on_animation_finished(_animation_name: StringName) -> void:
 	if _is_dead:
 		return

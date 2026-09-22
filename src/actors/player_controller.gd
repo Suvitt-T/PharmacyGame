@@ -35,6 +35,7 @@ func _ready() -> void:
 	hitbox.monitoring = false
 	combatant.damage_taken.connect(func(_amount, _critical): visuals.play_state("hurt"))
 	combatant.died.connect(func(): visuals.play_state("die"))
+	combatant.revived.connect(func(): visuals.revive())
 
 
 func _physics_process(delta: float) -> void:

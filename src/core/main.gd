@@ -5,27 +5,39 @@ extends Node3D
 const ENEMY_SCENE := preload("res://scenes/enemy.tscn")
 const DEBUG_XP_PER_PRESS := 250
 
+const PLAYER_SPAWN := Vector3(6, 1, 16)
+
 ## ศัตรูรากต้นไม้โลก (Prologue/Act 1) ตามเอกสาร จับคู่กับโมเดลที่ใกล้เคียงที่สุดในแพ็กที่มี
 const SPAWN_TABLE := [
-	{"name": "หมาป่าเถื่อน", "model": "Monkroose", "scale": 0.45, "tier": "common", "at": Vector3(6, 1, -6)},
-	{"name": "ค้างคาวรากเน่า", "model": "Birb", "scale": 0.40, "tier": "common", "at": Vector3(-7, 1, -4)},
-	{"name": "ผึ้งพิษราก", "model": "Frog", "scale": 0.38, "tier": "common", "at": Vector3(0, 1, -11)},
-	{"name": "หมีรากเฒ่า", "model": "Yeti", "scale": 0.60, "tier": "elite", "at": Vector3(9, 1, 3)},
+	{"name": "หมาป่าเถื่อน", "model": "Monkroose", "scale": 0.45, "tier": "common", "at": Vector3(10, 1, 12)},
+	{"name": "ค้างคาวรากเน่า", "model": "Birb", "scale": 0.40, "tier": "common", "at": Vector3(-11, 1, 13)},
+	{"name": "ผึ้งพิษราก", "model": "Frog", "scale": 0.38, "tier": "common", "at": Vector3(-4, 1, 21)},
+	{"name": "หมีรากเฒ่า", "model": "Yeti", "scale": 0.60, "tier": "elite", "at": Vector3(7, 1, 22)},
 ]
 
 @onready var player: PlayerController = $Player
 @onready var hud: Hud = $Hud
 @onready var enemy_root: Node3D = $Enemies
+@onready var hub: HubWorld = $HubWorld
 
 
 func _ready() -> void:
 	InputActions.ensure_registered()
+	_build_world()
 	player.add_to_group("player")
 	player.combatant.sheet.character_name = "ผู้ตื่น"
 	hud.bind_player(player.combatant)
 	player.combatant.damage_taken.connect(_on_player_damaged)
 	player.combatant.died.connect(_on_player_died)
 	_spawn_wave()
+
+
+func _build_world() -> void:
+	player.global_position = PLAYER_SPAWN
+	hub.reserve(PLAYER_SPAWN, 6.0)
+	for entry in SPAWN_TABLE:
+		hub.reserve(entry["at"], 4.0)
+	hub.build()
 
 
 func _spawn_wave() -> void:
