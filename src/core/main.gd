@@ -4,8 +4,13 @@ extends Node3D
 
 const ENEMY_SCENE := preload("res://scenes/enemy.tscn")
 const DEBUG_XP_PER_PRESS := 250
-const SPAWN_POINTS := [
-	Vector3(6, 1, -6), Vector3(-7, 1, -4), Vector3(0, 1, -11), Vector3(9, 1, 3),
+
+## ศัตรูรากต้นไม้โลก (Prologue/Act 1) ตามเอกสาร จับคู่กับโมเดลที่ใกล้เคียงที่สุดในแพ็กที่มี
+const SPAWN_TABLE := [
+	{"name": "หมาป่าเถื่อน", "model": "Monkroose", "scale": 0.45, "tier": "common", "at": Vector3(6, 1, -6)},
+	{"name": "ค้างคาวรากเน่า", "model": "Birb", "scale": 0.40, "tier": "common", "at": Vector3(-7, 1, -4)},
+	{"name": "ผึ้งพิษราก", "model": "Frog", "scale": 0.38, "tier": "common", "at": Vector3(0, 1, -11)},
+	{"name": "หมีรากเฒ่า", "model": "Yeti", "scale": 0.60, "tier": "elite", "at": Vector3(9, 1, 3)},
 ]
 
 @onready var player: PlayerController = $Player
@@ -24,14 +29,23 @@ func _ready() -> void:
 
 
 func _spawn_wave() -> void:
-	for point in SPAWN_POINTS:
-		_spawn_enemy(point)
+	for entry in SPAWN_TABLE:
+		_spawn_enemy(entry)
 
 
-func _spawn_enemy(position: Vector3) -> void:
+func _spawn_enemy(entry: Dictionary) -> void:
 	var enemy: Enemy = ENEMY_SCENE.instantiate()
+	enemy.display_name = entry["name"]
+	enemy.tier = entry["tier"]
+	if entry["tier"] == "elite":
+		enemy.xp_reward = 120
+		enemy.move_speed = 2.6
+	# ต้องตั้งก่อน add_child เพราะ ActorVisuals สร้างโมเดลตอน _ready
+	var visuals: ActorVisuals = enemy.get_node("Visuals")
+	visuals.model_scene = load("res://assets/models/monsters/%s.gltf" % entry["model"])
+	visuals.model_scale = entry["scale"]
 	enemy_root.add_child(enemy)
-	enemy.global_position = position
+	enemy.global_position = entry["at"]
 	enemy.died.connect(_on_enemy_died)
 
 

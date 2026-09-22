@@ -22,6 +22,7 @@ const TIER_BASE := {
 }
 
 @onready var combatant: Combatant = $Combatant
+@onready var visuals: ActorVisuals = $Visuals
 
 var _target: Node3D
 var _cooldown := 0.0
@@ -31,6 +32,7 @@ func _ready() -> void:
 	var base: Dictionary = TIER_BASE.get(tier, TIER_BASE["common"])
 	combatant.weapon_base_damage = Formulas.enemy_damage(float(base["damage"]), zone_level)
 	combatant.died.connect(_on_died)
+	combatant.damage_taken.connect(func(_amount, _critical): visuals.play_state("hurt"))
 	await get_tree().process_frame
 	_scale_hp_to_tier(float(base["hp"]))
 
@@ -59,6 +61,7 @@ func _physics_process(delta: float) -> void:
 		velocity.x = 0.0
 		velocity.z = 0.0
 		move_and_slide()
+		visuals.update_locomotion(0.0)
 		return
 
 	var to_target := _target.global_position - global_position
@@ -77,9 +80,11 @@ func _physics_process(delta: float) -> void:
 			_cooldown = attack_cooldown
 			var target_combatant: Combatant = _target.get_node_or_null("Combatant")
 			if target_combatant != null:
+				visuals.play_state("attack")
 				combatant.attack(target_combatant)
 
 	move_and_slide()
+	visuals.update_locomotion(Vector2(velocity.x, velocity.z).length())
 
 
 func _acquire_target() -> void:
@@ -99,6 +104,8 @@ func _on_died() -> void:
 	died.emit(self)
 	set_physics_process(false)
 	$CollisionShape3D.set_deferred("disabled", true)
+	visuals.play_state("die")
 	var tween := create_tween()
-	tween.tween_property(self, "scale", Vector3(0.05, 0.05, 0.05), 0.4)
+	tween.tween_interval(1.4)
+	tween.tween_property(self, "position:y", position.y - 2.0, 0.6)
 	tween.tween_callback(queue_free)

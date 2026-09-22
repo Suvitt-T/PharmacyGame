@@ -20,6 +20,7 @@ const ATTACK_RECOVERY := 0.28
 
 @onready var combatant: Combatant = $Combatant
 @onready var hitbox: Area3D = $AttackHitbox
+@onready var visuals: ActorVisuals = $Visuals
 
 var _facing := Vector3.FORWARD
 var _dodge_time := 0.0
@@ -32,6 +33,8 @@ func _ready() -> void:
 	InputActions.ensure_registered()
 	combatant.is_player = true
 	hitbox.monitoring = false
+	combatant.damage_taken.connect(func(_amount, _critical): visuals.play_state("hurt"))
+	combatant.died.connect(func(): visuals.play_state("die"))
 
 
 func _physics_process(delta: float) -> void:
@@ -51,6 +54,7 @@ func _physics_process(delta: float) -> void:
 		_handle_movement(delta)
 
 	move_and_slide()
+	visuals.update_locomotion(Vector2(velocity.x, velocity.z).length())
 
 
 func _apply_gravity(delta: float) -> void:
@@ -102,6 +106,7 @@ func _start_dodge() -> void:
 	if not combatant.spend_stamina(DODGE_STAMINA_COST):
 		return
 	_dodge_time = DODGE_DURATION
+	visuals.play_state("dodge")
 
 
 func _start_attack() -> void:
@@ -110,6 +115,7 @@ func _start_attack() -> void:
 	_attack_state = "windup"
 	_attack_time = ATTACK_WINDUP
 	_already_hit.clear()
+	visuals.play_state("attack")
 
 
 func _tick_attack(delta: float) -> void:
