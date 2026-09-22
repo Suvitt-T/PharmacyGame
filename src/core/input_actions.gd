@@ -30,6 +30,11 @@ const DEBUG_BINDINGS := {
 	"debug_add_xp": [KEY_X],
 	"debug_damage_self": [KEY_C],
 	"debug_respec": [KEY_R],
+	"remedy_1": [KEY_1],
+	"remedy_2": [KEY_2],
+	"remedy_3": [KEY_3],
+	"remedy_4": [KEY_4],
+	"remedy_5": [KEY_5],
 }
 
 static var _registered := false

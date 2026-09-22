@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://src/actors/player_controller.gd" id="1_player"]
 [ext_resource type="Script" path="res://src/combat/combatant.gd" id="2_combatant"]
 [ext_resource type="Script" path="res://src/actors/actor_visuals.gd" id="3_visuals"]
+[ext_resource type="Script" path="res://src/pharmacy/metabolism.gd" id="5_metabolism"]
 [ext_resource type="PackedScene" path="res://assets/models/monsters/Ninja.gltf" id="4_model"]
 
 [sub_resource type="CapsuleShape3D" id="PlayerShape"]
@@ -32,6 +33,9 @@ is_player = true
 starting_level = 1
 weapon_base_damage = 14.0
 defense = 6.0
+
+[node name="Metabolism" type="Node" parent="."]
+script = ExtResource("5_metabolism")
 
 [node name="AttackHitbox" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 1.1)

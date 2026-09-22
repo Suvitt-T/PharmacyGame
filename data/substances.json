@@ -1,0 +1,259 @@
+{
+  "_note": "ED/TD ใช้หน่วยจริงของสารแต่ละตัว TD ที่เอกสารให้มาเป็น mg/kg ถูกแปลงเป็นหน่วยเดียวกับ ED โดยอิงน้ำหนักตัวมาตรฐาน 70 กก. ดู REFERENCE_BODY_WEIGHT_KG ใน pharmacokinetics.gd. half_life_seconds กับ base_onset_seconds เป็นค่าที่จูนเพื่อจังหวะเกม แต่คงลำดับสั้น-ยาวให้ตรงกับของจริง ส่วน real_half_life_hours เก็บค่าจริงไว้แสดงใน Pharmacopedia",
+  "salicin": {
+    "display_name": "ซาลิซิน",
+    "compound": "Salicin",
+    "source_note": "สารตั้งต้นของแอสไพริน สกัดจากเปลือกต้นหลิว",
+    "unit": "mg",
+    "effective_dose": 487.5,
+    "toxic_dose": 10500.0,
+    "half_life_seconds": 20.0,
+    "base_onset_seconds": 45.0,
+    "real_half_life_hours": 3.0,
+    "mechanism": "cox_inhibition",
+    "mechanism_note": "ยับยั้งเอนไซม์ COX ทำให้สร้างสารก่อการอักเสบได้น้อยลง",
+    "preparation_efficiency": {
+      "decoction": 1.0,
+      "tincture": 0.85,
+      "powder": 0.7,
+      "salve": 0.5,
+      "injection_extract": 0.0
+    },
+    "therapeutic_effect": {
+      "kind": "resist_status",
+      "magnitude": 0.35,
+      "status": "inflammation"
+    },
+    "toxic_effect": {
+      "kind": "damage_over_time",
+      "magnitude": 4.0
+    },
+    "act_available": 0,
+    "risk_level": "low"
+  },
+  "penicillin": {
+    "display_name": "เพนิซิลลิน",
+    "compound": "Penicillin",
+    "source_note": "เก็บจากเห็ดรา Penicillium ยาปฏิชีวนะตัวแรกของโลกจริง",
+    "unit": "mg",
+    "effective_dose": 500.0,
+    "toxic_dose": 60000.0,
+    "half_life_seconds": 8.0,
+    "base_onset_seconds": 60.0,
+    "real_half_life_hours": 0.8,
+    "mechanism": "cell_wall_inhibition",
+    "mechanism_note": "ขัดขวางการสร้างผนังเซลล์แบคทีเรีย ไม่ทำอันตรายเซลล์คน จึงมี TI กว้างมาก",
+    "preparation_efficiency": {
+      "decoction": 0.4,
+      "tincture": 0.3,
+      "powder": 0.8,
+      "salve": 0.6,
+      "injection_extract": 1.0
+    },
+    "therapeutic_effect": {
+      "kind": "cleanse_status",
+      "magnitude": 1.0,
+      "status": "infection"
+    },
+    "toxic_effect": {
+      "kind": "damage_over_time",
+      "magnitude": 2.0
+    },
+    "act_available": 1,
+    "risk_level": "lowest"
+  },
+  "caffeine": {
+    "display_name": "คาเฟอีน",
+    "compound": "Caffeine",
+    "source_note": "เมล็ดกาแฟและกัวรานา",
+    "unit": "mg",
+    "effective_dose": 150.0,
+    "toxic_dose": 12250.0,
+    "half_life_seconds": 35.0,
+    "base_onset_seconds": 30.0,
+    "real_half_life_hours": 5.0,
+    "mechanism": "adenosine_antagonism",
+    "mechanism_note": "บล็อกตัวรับอะดีโนซีนที่ทำให้ง่วง ร่างกายจึงตื่นตัวขึ้น",
+    "preparation_efficiency": {
+      "decoction": 1.0,
+      "tincture": 0.9,
+      "powder": 0.85,
+      "salve": 0.2,
+      "injection_extract": 0.95
+    },
+    "therapeutic_effect": {
+      "kind": "stat_modifier",
+      "magnitude": 6.0,
+      "stat": "agility"
+    },
+    "toxic_effect": {
+      "kind": "damage_over_time",
+      "magnitude": 5.0
+    },
+    "act_available": 1,
+    "risk_level": "low"
+  },
+  "quinine": {
+    "display_name": "ควินิน",
+    "compound": "Quinine",
+    "source_note": "เปลือกต้นซิงโคนา ยารักษาไข้จับสั่นตัวแรกของโลกจริง",
+    "unit": "mg",
+    "effective_dose": 600.0,
+    "toxic_dose": 2000.0,
+    "half_life_seconds": 60.0,
+    "base_onset_seconds": 50.0,
+    "real_half_life_hours": 11.0,
+    "mechanism": "heme_polymerization_block",
+    "mechanism_note": "ขัดขวางการย่อยฮีมของเชื้อมาลาเรีย ทำให้เชื้อตายจากพิษของตัวเอง",
+    "preparation_efficiency": {
+      "decoction": 1.0,
+      "tincture": 0.95,
+      "powder": 0.75,
+      "salve": 0.1,
+      "injection_extract": 0.9
+    },
+    "therapeutic_effect": {
+      "kind": "cleanse_status",
+      "magnitude": 1.0,
+      "status": "cyclic_fever"
+    },
+    "toxic_effect": {
+      "kind": "apply_status",
+      "magnitude": 1.0,
+      "status": "cinchonism"
+    },
+    "act_available": 2,
+    "risk_level": "medium"
+  },
+  "atropine": {
+    "display_name": "แอโทรพีน",
+    "compound": "Atropine",
+    "source_note": "ดอกเบลลาดอนนา ยาแก้พิษกลุ่มโคลิเนอร์จิก",
+    "unit": "mg",
+    "effective_dose": 0.75,
+    "toxic_dose": 7.5,
+    "half_life_seconds": 18.0,
+    "base_onset_seconds": 20.0,
+    "real_half_life_hours": 2.0,
+    "mechanism": "muscarinic_antagonism",
+    "mechanism_note": "บล็อกตัวรับมัสคารินิก จึงหักล้างพิษที่กระตุ้นตัวรับนี้มากเกินไป",
+    "preparation_efficiency": {
+      "decoction": 0.6,
+      "tincture": 0.9,
+      "powder": 0.5,
+      "salve": 0.4,
+      "injection_extract": 1.0
+    },
+    "therapeutic_effect": {
+      "kind": "cleanse_status",
+      "magnitude": 1.0,
+      "status": "cholinergic_crisis"
+    },
+    "toxic_effect": {
+      "kind": "apply_status",
+      "magnitude": 1.0,
+      "status": "anticholinergic_delirium"
+    },
+    "antidote_for": [
+      "cholinergic_crisis"
+    ],
+    "act_available": 2,
+    "risk_level": "medium_high",
+    "risk_note": "ยาแก้พิษที่ตัวมันเองก็เป็นพิษได้ ให้เกินแล้วเกิดอาการตรงข้าม"
+  },
+  "morphine": {
+    "display_name": "มอร์ฟีน",
+    "compound": "Morphine",
+    "source_note": "ยางจากดอกป๊อปปี้ ยาแก้ปวดรุนแรง",
+    "unit": "mg",
+    "effective_dose": 10.0,
+    "toxic_dose": 200.0,
+    "half_life_seconds": 22.0,
+    "base_onset_seconds": 35.0,
+    "real_half_life_hours": 2.5,
+    "mechanism": "opioid_agonism",
+    "mechanism_note": "กระตุ้นตัวรับโอปิออยด์ ระงับปวดได้แรง แต่กดการหายใจถ้าเกินขนาด",
+    "preparation_efficiency": {
+      "decoction": 0.7,
+      "tincture": 1.0,
+      "powder": 0.8,
+      "salve": 0.3,
+      "injection_extract": 1.0
+    },
+    "therapeutic_effect": {
+      "kind": "resist_status",
+      "magnitude": 0.6,
+      "status": "pain"
+    },
+    "toxic_effect": {
+      "kind": "apply_status",
+      "magnitude": 1.0,
+      "status": "respiratory_depression"
+    },
+    "act_available": 2,
+    "risk_level": "high",
+    "risk_note": "TI ตัวเลขกว้างถึง 20 เท่า แต่จัดว่าเสี่ยงสูง เพราะกดการหายใจจนเสียชีวิตได้ก่อนถึงขนาดที่ตำรานับว่าเป็นพิษ"
+  },
+  "warfarin": {
+    "display_name": "วาร์ฟาริน",
+    "compound": "Warfarin",
+    "source_note": "เกิดจากคูมารินในหญ้าคลาวเวอร์ขึ้นรา ต้องคำนวณขนาดรายบุคคล",
+    "unit": "mg",
+    "effective_dose": 5.0,
+    "toxic_dose": 12.5,
+    "half_life_seconds": 120.0,
+    "base_onset_seconds": 90.0,
+    "real_half_life_hours": 40.0,
+    "mechanism": "vitamin_k_antagonism",
+    "mechanism_note": "ยับยั้งการนำวิตามินเคกลับมาใช้ เลือดจึงแข็งตัวช้าลง",
+    "preparation_efficiency": {
+      "decoction": 0.5,
+      "tincture": 0.85,
+      "powder": 1.0,
+      "salve": 0.1,
+      "injection_extract": 0.8
+    },
+    "therapeutic_effect": {
+      "kind": "apply_status",
+      "magnitude": 1.0,
+      "status": "thinned_blood"
+    },
+    "toxic_effect": {
+      "kind": "damage_over_time",
+      "magnitude": 9.0
+    },
+    "act_available": 2,
+    "risk_level": "very_high",
+    "risk_note": "ขอบเขตแคบมากและต่างกันรายบุคคล ต้องเจาะเลือดติดตามค่าการแข็งตัวของเลือดเสมอ"
+  },
+  "digoxin": {
+    "display_name": "ดิจอกซิน",
+    "compound": "Digoxin",
+    "source_note": "ดอกฟ็อกซ์โกลฟ สารที่มี TI แคบที่สุดในเกม วัตถุดิบบอสท้ายบท",
+    "unit": "ng/mL",
+    "effective_dose": 1.0,
+    "toxic_dose": 2.0,
+    "half_life_seconds": 90.0,
+    "base_onset_seconds": 40.0,
+    "real_half_life_hours": 40.0,
+    "mechanism": "sodium_potassium_atpase_inhibition",
+    "mechanism_note": "ยับยั้งปั๊มโซเดียม-โพแทสเซียมที่หัวใจ ทำให้บีบตัวแรงขึ้นและจังหวะช้าลง",
+    "preparation_efficiency": {
+      "decoction": 0.6,
+      "tincture": 0.8,
+      "powder": 0.7,
+      "salve": 0.1,
+      "injection_extract": 1.0
+    },
+    "therapeutic_effect": {
+      "kind": "stabilize_rhythm",
+      "magnitude": 1.0
+    },
+    "toxic_effect": {
+      "kind": "damage_over_time",
+      "magnitude": 14.0
+    },
+    "act_available": 3,
+    "risk_level": "extreme"
+  }
+}

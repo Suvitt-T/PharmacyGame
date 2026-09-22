@@ -1,0 +1,75 @@
+{
+  "_note": "วัตถุดิบดิบที่เก็บได้ในโลก แต่ละชิ้นให้สารออกฤทธิ์ 1 ตัว yield_per_unit คือปริมาณสาร (หน่วยเดียวกับ substance.unit) ที่ได้จากวัตถุดิบ 1 ชิ้นที่ potency 1.0",
+
+  "willow_bark": {
+    "display_name": "เปลือกต้นหลิว",
+    "substance": "salicin",
+    "yield_per_unit": 120.0,
+    "biomes": ["hub", "swamp"],
+    "ideal_biome": "hub",
+    "lore": "เปลือกชั้นในมีรสขม ชาวบ้านเคี้ยวแก้ปวดมาแต่โบราณก่อนจะมีใครรู้จักคำว่าแอสไพริน"
+  },
+
+  "penicillium_mold": {
+    "display_name": "เห็ดรา Penicillium",
+    "substance": "penicillin",
+    "yield_per_unit": 160.0,
+    "biomes": ["hub", "swamp"],
+    "ideal_biome": "swamp",
+    "lore": "ราสีเขียวอมฟ้าที่ขึ้นบนของหมักหมม พบโดยบังเอิญว่าฆ่าเชื้อรอบตัวมันได้"
+  },
+
+  "guarana_seed": {
+    "display_name": "เมล็ดกัวรานา",
+    "substance": "caffeine",
+    "yield_per_unit": 45.0,
+    "biomes": ["hub", "desert"],
+    "ideal_biome": "desert",
+    "lore": "เมล็ดแดงสดที่นักเดินทางเคี้ยวเพื่อข้ามทะเลทรายโดยไม่หลับ"
+  },
+
+  "cinchona_bark": {
+    "display_name": "เปลือกต้นซิงโคนา",
+    "substance": "quinine",
+    "yield_per_unit": 150.0,
+    "biomes": ["swamp"],
+    "ideal_biome": "swamp",
+    "lore": "เปลือกจากถ้ำใต้น้ำในหนองน้ำใต้ราก ต้นที่ขึ้นในที่ชื้นจัดให้สารเข้มข้นที่สุด"
+  },
+
+  "belladonna_flower": {
+    "display_name": "ดอกเบลลาดอนนา",
+    "substance": "atropine",
+    "yield_per_unit": 0.22,
+    "biomes": ["swamp", "ice"],
+    "ideal_biome": "ice",
+    "lore": "ดอกสีม่วงเข้มที่สวยจนหลอกให้ประมาท ทั้งยาและพิษอยู่ในดอกเดียวกัน"
+  },
+
+  "poppy_resin": {
+    "display_name": "ยางดอกป๊อปปี้",
+    "substance": "morphine",
+    "yield_per_unit": 3.2,
+    "biomes": ["desert"],
+    "ideal_biome": "desert",
+    "lore": "ยางขาวที่กรีดจากฝักอ่อน แห้งแล้วกลายเป็นก้อนสีน้ำตาล"
+  },
+
+  "moldy_clover": {
+    "display_name": "หญ้าคลาวเวอร์ขึ้นรา",
+    "substance": "warfarin",
+    "yield_per_unit": 1.4,
+    "biomes": ["hub", "ice"],
+    "ideal_biome": "hub",
+    "lore": "หญ้าที่เก็บไว้ชื้นจนขึ้นรา ฝูงสัตว์ที่กินเข้าไปเลือดไหลไม่หยุด"
+  },
+
+  "foxglove_flower": {
+    "display_name": "ดอกฟ็อกซ์โกลฟ",
+    "substance": "digoxin",
+    "yield_per_unit": 0.35,
+    "biomes": ["ice"],
+    "ideal_biome": "ice",
+    "lore": "ดอกระฆังสีม่วงบนหน้าผายอดเขาน้ำแข็ง ต้นที่ยิ่งสูงยิ่งอันตราย และยิ่งจำเป็น"
+  }
+}

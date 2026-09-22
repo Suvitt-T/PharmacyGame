@@ -19,6 +19,9 @@ var class_chosen_at_level: int = CharacterClass.UNLOCK_LEVEL
 ## แต้มที่ผู้เล่นแจกเอง ไม่รวม base 5 และไม่รวมโบนัสอาชีพ
 var allocated: StatBlock = StatBlock.new()
 
+## โบนัสชั่วคราวจากยาและบัฟ ระบบเภสัชกรรมเขียนลงตรงนี้ ไม่แตะ allocated
+var temporary: StatBlock = StatBlock.new()
+
 
 func _init(p_level: int = 1) -> void:
 	level = clampi(p_level, 1, Progression.MAX_LEVEL)
@@ -42,7 +45,7 @@ func class_bonus() -> StatBlock:
 
 
 func final_stats() -> StatBlock:
-	return base_stats().plus(allocated).plus(class_bonus())
+	return base_stats().plus(allocated).plus(class_bonus()).plus(temporary)
 
 
 func spent_points() -> int:

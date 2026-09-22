@@ -19,6 +19,16 @@ const SPAWN_TABLE := [
 @onready var hud: Hud = $Hud
 @onready var enemy_root: Node3D = $Enemies
 @onready var hub: HubWorld = $HubWorld
+@onready var metabolism: Metabolism = $Player/Metabolism
+
+## ยาตัวอย่างสำหรับทดลองระบบใน Phase 2 — หน้าจอปรุงยาจริงมาใน Phase 3
+const TEST_REMEDIES := {
+	"remedy_1": {"ingredient": "willow_bark", "units": 12, "method": Preparation.Method.DECOCTION},
+	"remedy_2": {"ingredient": "willow_bark", "units": 400, "method": Preparation.Method.DECOCTION},
+	"remedy_3": {"ingredient": "guarana_seed", "units": 8, "method": Preparation.Method.DECOCTION},
+	"remedy_4": {"ingredient": "cinchona_bark", "units": 9, "method": Preparation.Method.DECOCTION},
+	"remedy_5": {"ingredient": "foxglove_flower", "units": 4, "method": Preparation.Method.INJECTION_EXTRACT},
+}
 
 
 func _ready() -> void:
@@ -29,6 +39,9 @@ func _ready() -> void:
 	hud.bind_player(player.combatant)
 	player.combatant.damage_taken.connect(_on_player_damaged)
 	player.combatant.died.connect(_on_player_died)
+	metabolism.remedy_administered.connect(_on_remedy_administered)
+	metabolism.interaction_triggered.connect(_on_interaction_triggered)
+	metabolism.effect_ended.connect(_on_effect_ended)
 	_spawn_wave()
 
 
@@ -85,6 +98,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		_auto_allocate_points()
 	elif event.is_action_pressed("debug_damage_self"):
 		player.combatant.set_hp(player.combatant.current_hp - 40.0)
+	elif _try_remedy(event):
+		return
 	elif event.is_action_pressed("debug_respec"):
 		player.combatant.sheet.respec()
 		player.combatant.restore_all()
@@ -99,3 +114,41 @@ func _auto_allocate_points() -> void:
 	while sheet.unspent_points() > 0:
 		sheet.allocate(order[index % order.size()])
 		index += 1
+
+
+# --- ทดลองระบบเภสัชกรรม ---
+
+func _try_remedy(event: InputEvent) -> bool:
+	for action in TEST_REMEDIES:
+		if not event.is_action_pressed(action):
+			continue
+		var recipe: Dictionary = TEST_REMEDIES[action]
+		var remedy := Remedy.craft(recipe["ingredient"], recipe["units"], recipe["method"], 1.0)
+		if remedy == null or remedy.is_inert():
+			hud.log_line("ปรุงไม่สำเร็จ วิธีเตรียมไม่เข้ากับวัตถุดิบ")
+			return true
+		metabolism.administer(remedy)
+		return true
+	return false
+
+
+func _on_remedy_administered(remedy: Remedy, evaluation: Dictionary) -> void:
+	var substance: Substance = remedy.substance()
+	hud.log_line("%s · %.2f %s · %s" % [
+		remedy.display_name(),
+		evaluation["effective_dose"],
+		evaluation["unit"],
+		Pharmacokinetics.zone_name(evaluation["zone"]),
+	])
+	if evaluation["zone"] == Pharmacokinetics.Zone.NO_EFFECT:
+		hud.log_line("  ไม่ถึง ED %.2f %s จึงไม่ออกฤทธิ์" % [substance.effective_dose, substance.unit])
+	else:
+		hud.log_line("  ออกฤทธิ์ใน %.1f วิ นาน %.1f วิ" % [evaluation["onset"], evaluation["duration"]])
+
+
+func _on_interaction_triggered(rule: Dictionary) -> void:
+	hud.log_line("[%s] %s" % [Interaction.kind_name(rule["kind"]), rule["note"]])
+
+
+func _on_effect_ended(effect: ActiveEffect) -> void:
+	hud.log_line("%s หมดฤทธิ์" % effect.substance().display_name)

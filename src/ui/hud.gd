@@ -44,6 +44,12 @@ func _ready() -> void:
 
 	var hint := Label.new()
 	hint.text = "WASD เดิน · Shift วิ่ง · Space หลบ · คลิกซ้าย โจมตี · X +XP · C ดาเมจตัวเอง · R respec"
+
+	var remedy_hint := Label.new()
+	remedy_hint.text = "ยาทดลอง — 1 หลิวพอดี · 2 หลิวเกินขนาด · 3 กัวรานา · 4 ซิงโคนา · 5 ฟ็อกซ์โกลฟฉีด (ลอง 4 แล้ว 5 ติดกัน)"
+	remedy_hint.add_theme_font_size_override("font_size", 12)
+	remedy_hint.modulate = Color(1, 1, 1, 0.65)
+	column.add_child(remedy_hint)
 	hint.add_theme_font_size_override("font_size", 12)
 	hint.modulate = Color(1, 1, 1, 0.65)
 	column.add_child(hint)
@@ -122,6 +128,6 @@ func _refresh() -> void:
 
 func log_line(text: String) -> void:
 	_log_lines.append(text)
-	while _log_lines.size() > 6:
+	while _log_lines.size() > 9:
 		_log_lines.pop_front()
 	_log_label.text = "\n".join(_log_lines)
