@@ -1,0 +1,35 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://src/actors/enemy.gd" id="1_enemy"]
+[ext_resource type="Script" path="res://src/combat/combatant.gd" id="2_combatant"]
+
+[sub_resource type="CapsuleShape3D" id="EnemyShape"]
+radius = 0.45
+height = 1.5
+
+[sub_resource type="CapsuleMesh" id="EnemyMesh"]
+radius = 0.45
+height = 1.5
+
+[sub_resource type="StandardMaterial3D" id="EnemyMaterial"]
+albedo_color = Color(0.62, 0.28, 0.34, 1)
+
+[node name="Enemy" type="CharacterBody3D" groups=["enemy"]]
+collision_layer = 4
+collision_mask = 5
+script = ExtResource("1_enemy")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+shape = SubResource("EnemyShape")
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+mesh = SubResource("EnemyMesh")
+surface_material_override/0 = SubResource("EnemyMaterial")
+
+[node name="Combatant" type="Node" parent="."]
+script = ExtResource("2_combatant")
+starting_level = 1
+weapon_base_damage = 8.0
+defense = 2.0

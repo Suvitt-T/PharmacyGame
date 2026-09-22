@@ -1,0 +1,75 @@
+extends Node3D
+
+## Sandbox ทดสอบ Phase 1: เดิน ตี รับดาเมจ ได้ XP เลเวลอัพ
+
+const ENEMY_SCENE := preload("res://scenes/enemy.tscn")
+const DEBUG_XP_PER_PRESS := 250
+const SPAWN_POINTS := [
+	Vector3(6, 1, -6), Vector3(-7, 1, -4), Vector3(0, 1, -11), Vector3(9, 1, 3),
+]
+
+@onready var player: PlayerController = $Player
+@onready var hud: Hud = $Hud
+@onready var enemy_root: Node3D = $Enemies
+
+
+func _ready() -> void:
+	InputActions.ensure_registered()
+	player.add_to_group("player")
+	player.combatant.sheet.character_name = "ผู้ตื่น"
+	hud.bind_player(player.combatant)
+	player.combatant.damage_taken.connect(_on_player_damaged)
+	player.combatant.died.connect(_on_player_died)
+	_spawn_wave()
+
+
+func _spawn_wave() -> void:
+	for point in SPAWN_POINTS:
+		_spawn_enemy(point)
+
+
+func _spawn_enemy(position: Vector3) -> void:
+	var enemy: Enemy = ENEMY_SCENE.instantiate()
+	enemy_root.add_child(enemy)
+	enemy.global_position = position
+	enemy.died.connect(_on_enemy_died)
+
+
+func _on_enemy_died(enemy: Enemy) -> void:
+	var gained := player.combatant.sheet.add_xp(enemy.xp_reward)
+	hud.log_line("ปราบ %s · +%d XP" % [enemy.display_name, enemy.xp_reward])
+	if gained > 0:
+		hud.log_line("แต้ม Stat เหลือ %d แต้ม" % player.combatant.sheet.unspent_points())
+	if enemy_root.get_child_count() <= 1:
+		await get_tree().create_timer(2.0).timeout
+		_spawn_wave()
+
+
+func _on_player_damaged(amount: float, critical: bool) -> void:
+	hud.log_line("โดนโจมตี %d%s" % [roundi(amount), " (คริติคอล)" if critical else ""])
+
+
+func _on_player_died() -> void:
+	hud.log_line("ผู้ตื่นล้มลง... กด R เพื่อฟื้น")
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("debug_add_xp"):
+		player.combatant.sheet.add_xp(DEBUG_XP_PER_PRESS)
+		_auto_allocate_points()
+	elif event.is_action_pressed("debug_damage_self"):
+		player.combatant.set_hp(player.combatant.current_hp - 40.0)
+	elif event.is_action_pressed("debug_respec"):
+		player.combatant.sheet.respec()
+		player.combatant.restore_all()
+		hud.log_line("Respec แล้ว คืนแต้มทั้งหมด")
+
+
+## ชั่วคราวสำหรับ Phase 1 — Phase 4 จะมีหน้าจอแจกแต้มจริง
+func _auto_allocate_points() -> void:
+	var sheet := player.combatant.sheet
+	var order := ["vitality", "strength", "agility", "intellect"]
+	var index := 0
+	while sheet.unspent_points() > 0:
+		sheet.allocate(order[index % order.size()])
+		index += 1
