@@ -37,6 +37,13 @@ const DEBUG_BINDINGS := {
 	"remedy_5": [KEY_5],
 	"debug_roll_loot": [KEY_E],
 	"debug_insert_vial": [KEY_V],
+	"debug_choose_class": [KEY_TAB],
+	"debug_learn_skill": [KEY_L],
+	"skill_1": [KEY_Q],
+	"skill_2": [KEY_F],
+	"skill_3": [KEY_G],
+	"skill_4": [KEY_H],
+	"skill_5": [KEY_T],
 }
 
 static var _registered := false

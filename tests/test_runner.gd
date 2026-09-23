@@ -15,6 +15,8 @@ const SUITES := [
 	"res://tests/test_metabolism.gd",
 	"res://tests/test_itemization.gd",
 	"res://tests/test_inventory.gd",
+	"res://tests/test_skill_tree.gd",
+	"res://tests/test_skill_runtime.gd",
 ]
 
 var passed := 0

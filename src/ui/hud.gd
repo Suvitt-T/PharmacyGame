@@ -15,10 +15,12 @@ var _xp_bar: ProgressBar
 var _header: Label
 var _stat_label: Label
 var _gear_label: Label
+var _skill_label: Label
 var _log_label: Label
 
 var _combatant: Combatant
 var _inventory: InventoryComponent
+var _skills: SkillRuntime
 var _log_lines: Array[String] = []
 
 
@@ -47,11 +49,14 @@ func _ready() -> void:
 	_gear_label = Label.new()
 	column.add_child(_gear_label)
 
+	_skill_label = Label.new()
+	column.add_child(_skill_label)
+
 	var hint := Label.new()
 	hint.text = "WASD เดิน · Shift วิ่ง · Space หลบ · คลิกซ้าย โจมตี · X +XP · C ดาเมจตัวเอง · R respec"
 
 	var remedy_hint := Label.new()
-	remedy_hint.text = "ยาทดลอง — 1 หลิวพอดี · 2 หลิวเกินขนาด · 3 กัวรานา · 4 ซิงโคนา · 5 ฟ็อกซ์โกลฟฉีด (ลอง 4 แล้ว 5 ติดกัน) · E สุ่มดรอป · V เสียบ Vial"
+	remedy_hint.text = "ยาทดลอง — 1 หลิวพอดี · 2 หลิวเกินขนาด · 3 กัวรานา · 4 ซิงโคนา · 5 ฟ็อกซ์โกลฟฉีด (ลอง 4 แล้ว 5 ติดกัน) · E สุ่มดรอป · V เสียบ Vial\nอาชีพ — Tab เลือกอาชีพ (ต้อง Lv10) · L เรียนสกิลถัดไป · Q F G H T ใช้สกิลช่อง 1-5"
 	remedy_hint.add_theme_font_size_override("font_size", 12)
 	remedy_hint.modulate = Color(1, 1, 1, 0.65)
 	column.add_child(remedy_hint)
@@ -93,6 +98,13 @@ func _make_bar(parent: Control, label_text: String, color: Color) -> ProgressBar
 	row.add_child(value)
 
 	return bar
+
+
+func bind_skills(runtime: SkillRuntime) -> void:
+	_skills = runtime
+	runtime.tree.skill_learned.connect(func(_s): _refresh())
+	runtime.cooldown_changed.connect(func(_id, _remaining): _refresh())
+	_refresh()
 
 
 func bind_inventory(component: InventoryComponent) -> void:
@@ -143,6 +155,8 @@ func _refresh() -> void:
 			_inventory.inventory.used_slots(), _inventory.inventory.bag_capacity,
 			_inventory.inventory.root_coins, loadout.total_vial_slots()
 		]
+	if _skills != null:
+		_skill_label.text = _skill_text()
 
 
 func log_line(text: String) -> void:
@@ -150,3 +164,22 @@ func log_line(text: String) -> void:
 	while _log_lines.size() > 9:
 		_log_lines.pop_front()
 	_log_label.text = "\n".join(_log_lines)
+
+
+func _skill_text() -> String:
+	var tree := _skills.tree
+	if tree.class_id == CharacterClass.Id.NONE:
+		return "ยังไม่มีอาชีพ — ถึง Lv10 แล้วกด Tab เข้าพิธีเลือกเส้นทาง"
+
+	var parts := ["สาย: " + tree.branch_display_name()]
+	var index := 1
+	for skill in tree.active_skills():
+		var remaining: float = _skills.remaining_cooldown(skill.id)
+		var state := "%.0f วิ" % remaining if remaining > 0.0 else "พร้อม"
+		if skill.kind == Skill.Kind.TOGGLE:
+			state = "เปิดอยู่" if _skills.is_toggled(skill.id) else "ปิด"
+		parts.append("[%d] %s (%s)" % [index, skill.name, state])
+		index += 1
+	for skill in tree.passive_skills():
+		parts.append("◇ %s" % skill.name)
+	return " · ".join(parts)

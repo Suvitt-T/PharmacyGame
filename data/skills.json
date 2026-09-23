@@ -1,0 +1,231 @@
+{
+  "_note": "source=doc คือสกิลที่เอกสารระบุชื่อ ค่า Mana และ Cooldown ไว้ตรง ๆ ห้ามแก้ตัวเลขโดยไม่แก้เอกสารด้วย. source=designed คือตัวคู่ A/B ที่ออกแบบเพิ่ม เพราะเอกสารให้สกิลไว้อาชีพละ 5 ตัว แต่ระบบสายย่อยต้องการคู่เลือกที่ Lv13/16/19 และ Ultimate แยกสาย รวมเป็น 9 ตัวต่ออาชีพ. branch=core คือสกิล Lv10 ที่ทุกสายได้เหมือนกัน",
+
+  "_branches": {
+    "alchemist": {"a": "นักปรุงประจัญบาน", "b": "ปรมาจารย์เภสัชกรรม"},
+    "field_medic": {"a": "หมอสนามรบ", "b": "ผู้พิทักษ์ชีวิต"},
+    "toxicologist": {"a": "นักฆ่าพิษเฉียบพลัน", "b": "นักระบาดวิทยา"},
+    "herb_vanguard": {"a": "ปราการหนาม", "b": "นักล่าแห่งป่า"}
+  },
+
+  "alch_flash_distill": {
+    "class": "alchemist", "level": 10, "branch": "core", "source": "doc",
+    "name": "กลั่นเร่งด่วน", "kind": "active", "mana_cost": 20, "cooldown": 8,
+    "effect": {"kind": "instant_craft"},
+    "note": "ปรุงยาทันทีกลางสนามรบ"
+  },
+  "alch_firebrand_flask": {
+    "class": "alchemist", "level": 13, "branch": "a", "source": "designed",
+    "name": "ขวดเพลิงปฏิกิริยา", "kind": "active", "mana_cost": 25, "cooldown": 12,
+    "effect": {"kind": "skill_damage", "magnitude": 34.0, "radius": 4.0},
+    "note": "ขว้างขวดสารที่ทำปฏิกิริยารุนแรงเมื่อแตก"
+  },
+  "alch_concentrate": {
+    "class": "alchemist", "level": 13, "branch": "b", "source": "doc",
+    "name": "สูตรเข้มข้น", "kind": "active", "mana_cost": 25, "cooldown": 15,
+    "effect": {"kind": "potency_buff", "magnitude": 0.35, "duration": 20.0},
+    "note": "เพิ่ม Potency ของยาที่ปรุงต่อไปชั่วคราว"
+  },
+  "alch_diffusion": {
+    "class": "alchemist", "level": 16, "branch": "a", "source": "doc",
+    "name": "การกระจายฤทธิ์", "kind": "active", "mana_cost": 35, "cooldown": 20,
+    "effect": {"kind": "convert_to_aoe", "radius": 6.0},
+    "note": "แปลงยาเดี่ยวเป็น AoE"
+  },
+  "alch_forbidden_formula": {
+    "class": "alchemist", "level": 16, "branch": "b", "source": "designed",
+    "name": "ตำรับต้องห้าม", "kind": "passive",
+    "effect": {"kind": "therapeutic_window_bonus", "magnitude": 6.0},
+    "note": "ความรู้ที่ลึกกว่าทำให้กะขนาดยาแม่นขึ้น ขยาย Therapeutic Window เพิ่ม"
+  },
+  "alch_chain_reaction": {
+    "class": "alchemist", "level": 19, "branch": "a", "source": "designed",
+    "name": "ปฏิกิริยาต่อเนื่อง", "kind": "active", "mana_cost": 30, "cooldown": 18,
+    "effect": {"kind": "skill_damage", "magnitude": 26.0, "radius": 5.0, "chains": 3},
+    "note": "สารกระเด็นต่อไปยังศัตรูข้างเคียงได้อีก 3 ทอด"
+  },
+  "alch_reaction_balance": {
+    "class": "alchemist", "level": 19, "branch": "b", "source": "doc",
+    "name": "สมดุลปฏิกิริยา", "kind": "triggered", "mana_cost": 10, "cooldown": 0,
+    "effect": {"kind": "prevent_adverse_reaction"},
+    "note": "ป้องกัน Adverse Reaction จากผสมยาผิดคู่ เสีย Mana 10 ต่อครั้งที่ทำงาน"
+  },
+  "alch_cascade": {
+    "class": "alchemist", "level": 22, "branch": "a", "source": "designed",
+    "name": "ปฏิกิริยาลูกโซ่", "kind": "active", "mana_cost": 85, "cooldown": 95,
+    "effect": {"kind": "skill_damage", "magnitude": 120.0, "radius": 9.0},
+    "note": "จุดปฏิกิริยาลูกโซ่ในวงกว้าง ดาเมจสูงสุดของสายบุก"
+  },
+  "alch_mobile_lab": {
+    "class": "alchemist", "level": 22, "branch": "b", "source": "doc",
+    "name": "ห้องทดลองเคลื่อนที่", "kind": "active", "mana_cost": 80, "cooldown": 90,
+    "effect": {"kind": "craft_zone", "radius": 8.0, "duration": 25.0},
+    "note": "สร้างพื้นที่ปรุงยาให้ทั้งทีมกลางการต่อสู้"
+  },
+
+  "medic_first_aid": {
+    "class": "field_medic", "level": 10, "branch": "core", "source": "doc",
+    "name": "ปฐมพยาบาลฉับไว", "kind": "active", "mana_cost": 25, "cooldown": 10,
+    "effect": {"kind": "heal", "magnitude": 45.0},
+    "note": "รักษา HP ทันทีด้วย Mana"
+  },
+  "medic_detox": {
+    "class": "field_medic", "level": 13, "branch": "a", "source": "doc",
+    "name": "คลายพิษ", "kind": "active", "mana_cost": 20, "cooldown": 15,
+    "effect": {"kind": "cleanse_all"},
+    "note": "ล้างสถานะผิดปกติทันที"
+  },
+  "medic_pulse_blessing": {
+    "class": "field_medic", "level": 13, "branch": "b", "source": "designed",
+    "name": "พรแห่งชีพจร", "kind": "passive",
+    "effect": {"kind": "regen_aura", "magnitude": 2.5, "radius": 8.0},
+    "note": "ฟื้น HP ให้ตัวเองและเพื่อนในวงอย่างช้า ๆ ตลอดเวลา"
+  },
+  "medic_field_suture": {
+    "class": "field_medic", "level": 16, "branch": "a", "source": "designed",
+    "name": "เย็บแผลเร่งด่วน", "kind": "active", "mana_cost": 28, "cooldown": 9,
+    "effect": {"kind": "heal", "magnitude": 70.0},
+    "note": "รักษาหนักกว่าปฐมพยาบาลและคูลดาวน์สั้น แลกกับต้องอยู่นิ่ง"
+  },
+  "medic_immune_boost": {
+    "class": "field_medic", "level": 16, "branch": "b", "source": "doc",
+    "name": "กระตุ้นภูมิคุ้มกัน", "kind": "active", "mana_cost": 30, "cooldown": 25,
+    "effect": {"kind": "team_status_resistance", "magnitude": 0.4, "duration": 20.0, "radius": 10.0},
+    "note": "บัฟต้านทานสถานะผิดปกติให้ทีม"
+  },
+  "medic_rapid_diagnosis": {
+    "class": "field_medic", "level": 19, "branch": "a", "source": "doc",
+    "name": "วิเคราะห์อาการเร่งด่วน", "kind": "active", "mana_cost": 15, "cooldown": 5,
+    "effect": {"kind": "reveal_vitals", "precision": 1.0},
+    "note": "สแกนเห็นอาการ/จุดอ่อนจริงทันที ใช้อ่านจังหวะหัวใจในบอสท้ายบท"
+  },
+  "medic_pulse_sense": {
+    "class": "field_medic", "level": 19, "branch": "b", "source": "designed",
+    "name": "สัมผัสชีพจร", "kind": "passive",
+    "effect": {"kind": "reveal_vitals", "precision": 0.65},
+    "note": "อ่านจังหวะหัวใจได้ตลอดเวลาโดยไม่ต้องกด แต่ค่าหยาบกว่า เผื่อไว้ให้สายนี้ผ่านบอสท้ายบทได้เหมือนกัน"
+  },
+  "medic_miracle": {
+    "class": "field_medic", "level": 22, "branch": "a", "source": "doc",
+    "name": "ปาฏิหาริย์แห่งชีพจร", "kind": "active", "mana_cost": 100, "cooldown": 0,
+    "uses_per_fight": 1,
+    "effect": {"kind": "revive", "magnitude": 0.5},
+    "note": "ชุบชีวิตตัวเองหรือเพื่อน ใช้ได้ 1 ครั้งต่อไฟต์"
+  },
+  "medic_lifewarden": {
+    "class": "field_medic", "level": 22, "branch": "b", "source": "designed",
+    "name": "ปราการแห่งชีวิต", "kind": "active", "mana_cost": 95, "cooldown": 100,
+    "effect": {"kind": "team_shield", "magnitude": 140.0, "duration": 18.0, "radius": 10.0},
+    "note": "คลุมทีมด้วยเกราะชีวิต กันดาเมจแทนการรักษาย้อนหลัง"
+  },
+
+  "tox_venom_needle": {
+    "class": "toxicologist", "level": 10, "branch": "core", "source": "doc",
+    "name": "เข็มพิษ", "kind": "active", "mana_cost": 15, "cooldown": 6,
+    "effect": {"kind": "apply_dot", "magnitude": 7.0, "duration": 8.0},
+    "note": "โจมตีติดพิษ DOT"
+  },
+  "tox_weak_point": {
+    "class": "toxicologist", "level": 13, "branch": "a", "source": "doc",
+    "name": "วิเคราะห์จุดอ่อน", "kind": "active", "mana_cost": 10, "cooldown": 8,
+    "effect": {"kind": "reveal_weakness", "interrupt": true},
+    "note": "ระบุจุดอ่อนศัตรูต่อพิษแต่ละชนิด ใช้ขัดจังหวะวงจรของบอส Act 2 ได้"
+  },
+  "tox_contagion_vector": {
+    "class": "toxicologist", "level": 13, "branch": "b", "source": "designed",
+    "name": "สืบสายพาหะ", "kind": "active", "mana_cost": 12, "cooldown": 10,
+    "effect": {"kind": "reveal_weakness", "interrupt": true, "radius": 6.0},
+    "note": "อ่านเส้นทางการแพร่ของพิษทั้งกลุ่ม ขัดจังหวะได้เหมือนกันแต่กินวงกว้างกว่า"
+  },
+  "tox_stacking_venom": {
+    "class": "toxicologist", "level": 16, "branch": "a", "source": "doc",
+    "name": "พิษสะสม", "kind": "passive",
+    "effect": {"kind": "dot_stacking", "max_stacks": 5, "magnitude": 0.2},
+    "note": "Passive Stack พิษซ้อน"
+  },
+  "tox_miasma": {
+    "class": "toxicologist", "level": 16, "branch": "b", "source": "designed",
+    "name": "ไอพิษคลุ้ง", "kind": "toggle", "mana_per_second": 4,
+    "effect": {"kind": "aura_dot", "magnitude": 4.0, "radius": 5.0},
+    "note": "ปล่อยไอพิษรอบตัวต่อเนื่อง กินพื้นที่แทนการซ้อนสแตกใส่ตัวเดียว"
+  },
+  "tox_self_tolerance": {
+    "class": "toxicologist", "level": 19, "branch": "a", "source": "doc",
+    "name": "ดื้อพิษตนเอง", "kind": "active", "mana_cost": 20, "cooldown": 30,
+    "effect": {"kind": "hp_for_power", "hp_cost_percent": 0.15, "magnitude": 0.45, "duration": 15.0},
+    "note": "แลก HP เพื่อพลังพิษแรงขึ้น"
+  },
+  "tox_carrier": {
+    "class": "toxicologist", "level": 19, "branch": "b", "source": "designed",
+    "name": "พาหะนำโรค", "kind": "passive",
+    "effect": {"kind": "dot_spread_on_death", "radius": 6.0},
+    "note": "ศัตรูที่ตายด้วยพิษจะแพร่พิษต่อให้ตัวที่อยู่ใกล้"
+  },
+  "tox_lethal_dose": {
+    "class": "toxicologist", "level": 22, "branch": "a", "source": "designed",
+    "name": "ขนาดถึงตาย", "kind": "active", "mana_cost": 90, "cooldown": 85,
+    "effect": {"kind": "execute_dot", "magnitude": 150.0},
+    "note": "อัดพิษทั้งหมดลงเป้าเดียว ดาเมจก้อนใหญ่ที่สุดของสายเฉียบพลัน"
+  },
+  "tox_epidemiology": {
+    "class": "toxicologist", "level": 22, "branch": "b", "source": "doc",
+    "name": "ระบาดวิทยา", "kind": "active", "mana_cost": 90, "cooldown": 90,
+    "effect": {"kind": "spreading_aoe_dot", "magnitude": 18.0, "radius": 10.0, "duration": 14.0},
+    "note": "ปล่อยพิษ AoE ลามต่อเนื่อง"
+  },
+
+  "vang_root_armor": {
+    "class": "herb_vanguard", "level": 10, "branch": "core", "source": "doc",
+    "name": "เกราะรากไม้", "kind": "active", "mana_cost": 20, "cooldown": 12,
+    "effect": {"kind": "shield", "magnitude": 60.0, "duration": 10.0},
+    "note": "เกราะดูดซับดาเมจชั่วคราว"
+  },
+  "vang_bark_skin": {
+    "class": "herb_vanguard", "level": 13, "branch": "a", "source": "designed",
+    "name": "ผิวเปลือกไม้", "kind": "passive",
+    "effect": {"kind": "damage_reduction", "magnitude": 0.12},
+    "note": "ลดดาเมจที่ได้รับทุกชนิดแบบถาวร"
+  },
+  "vang_strength_extract": {
+    "class": "herb_vanguard", "level": 13, "branch": "b", "source": "doc",
+    "name": "สารสกัดพลังกาย", "kind": "active", "mana_cost": 25, "cooldown": 20,
+    "effect": {"kind": "stat_buff", "stat": "strength", "magnitude": 8.0, "duration": 18.0},
+    "note": "เพิ่ม STR/HP ชั่วคราวก่อนปะทะ"
+  },
+  "vang_thorn_guard": {
+    "class": "herb_vanguard", "level": 16, "branch": "a", "source": "doc",
+    "name": "หนามป้องกัน", "kind": "toggle", "mana_per_second": 5,
+    "effect": {"kind": "reflect_damage", "magnitude": 0.35},
+    "note": "สะท้อนดาเมจเมื่อโดนตี"
+  },
+  "vang_predator_lunge": {
+    "class": "herb_vanguard", "level": 16, "branch": "b", "source": "designed",
+    "name": "พุ่งล่า", "kind": "active", "mana_cost": 22, "cooldown": 11,
+    "effect": {"kind": "dash_attack", "magnitude": 40.0, "distance": 8.0},
+    "note": "พุ่งเข้าหาเป้าหมายแล้วฟันทันที ใช้ไล่ศัตรูที่ถอยหนี"
+  },
+  "vang_entangle": {
+    "class": "herb_vanguard", "level": 19, "branch": "a", "source": "doc",
+    "name": "รากยึดเหนี่ยว", "kind": "active", "mana_cost": 30, "cooldown": 18,
+    "effect": {"kind": "root", "duration": 4.0, "radius": 6.0},
+    "note": "ตรึงศัตรูกับพื้น"
+  },
+  "vang_blood_scent": {
+    "class": "herb_vanguard", "level": 19, "branch": "b", "source": "designed",
+    "name": "กลิ่นเลือด", "kind": "passive",
+    "effect": {"kind": "damage_vs_wounded", "magnitude": 0.30, "hp_threshold": 0.4},
+    "note": "ตีแรงขึ้นกับศัตรูที่ HP ต่ำกว่า 40%"
+  },
+  "vang_reborn_forest": {
+    "class": "herb_vanguard", "level": 22, "branch": "a", "source": "doc",
+    "name": "ป่าเกิดใหม่", "kind": "active", "mana_cost": 85, "cooldown": 100,
+    "effect": {"kind": "team_regen", "magnitude": 14.0, "duration": 16.0, "radius": 10.0},
+    "note": "ฟื้น HP/Mana ต่อเนื่องให้ทีมในวง"
+  },
+  "vang_apex_hunt": {
+    "class": "herb_vanguard", "level": 22, "branch": "b", "source": "designed",
+    "name": "ผู้ล่าสูงสุด", "kind": "active", "mana_cost": 80, "cooldown": 95,
+    "effect": {"kind": "stat_buff", "stat": "strength", "magnitude": 25.0, "duration": 20.0, "lifesteal": 0.25},
+    "note": "เข้าสู่สภาวะล่า พละกำลังพุ่งและดูดเลือดจากทุกการโจมตี"
+  }
+}

@@ -21,6 +21,9 @@ const SPAWN_TABLE := [
 @onready var hub: HubWorld = $HubWorld
 @onready var metabolism: Metabolism = $Player/Metabolism
 @onready var inventory_component: InventoryComponent = $Player/InventoryComponent
+@onready var skills: SkillRuntime = $Player/SkillRuntime
+
+const SKILL_ACTIONS := ["skill_1", "skill_2", "skill_3", "skill_4", "skill_5"]
 
 ## ยาตัวอย่างสำหรับทดลองระบบใน Phase 2 — หน้าจอปรุงยาจริงมาใน Phase 3
 const TEST_REMEDIES := {
@@ -44,6 +47,10 @@ func _ready() -> void:
 	metabolism.remedy_administered.connect(_on_remedy_administered)
 	metabolism.interaction_triggered.connect(_on_interaction_triggered)
 	metabolism.effect_ended.connect(_on_effect_ended)
+	skills.skill_activated.connect(_on_skill_activated)
+	skills.skill_failed.connect(_on_skill_failed)
+	skills.toggle_changed.connect(_on_toggle_changed)
+	hud.bind_skills(skills)
 	_give_starting_kit()
 	_spawn_wave()
 
@@ -101,6 +108,12 @@ func _unhandled_input(event: InputEvent) -> void:
 		_auto_allocate_points()
 	elif event.is_action_pressed("debug_damage_self"):
 		player.combatant.set_hp(player.combatant.current_hp - 40.0)
+	elif event.is_action_pressed("debug_choose_class"):
+		_choose_next_class()
+	elif event.is_action_pressed("debug_learn_skill"):
+		_learn_next_skill()
+	elif _try_skill(event):
+		return
 	elif event.is_action_pressed("debug_roll_loot"):
 		_roll_loot()
 	elif event.is_action_pressed("debug_insert_vial"):
@@ -214,3 +227,77 @@ func _insert_vial() -> void:
 				])
 				return
 	hud.log_line("ไม่มีช่อง Vial ว่าง — ต้องของ Rare ขึ้นไป (กด E หาของใหม่)")
+
+
+# --- อาชีพและสกิล ---
+
+func _choose_next_class() -> void:
+	var sheet := player.combatant.sheet
+	if sheet.class_id != CharacterClass.Id.NONE:
+		hud.log_line("เลือกอาชีพไปแล้ว: %s" % CharacterClass.display_name(sheet.class_id))
+		return
+	if sheet.level < CharacterClass.UNLOCK_LEVEL:
+		hud.log_line("ต้องถึง Lv %d ก่อนจึงเลือกอาชีพได้ (กด X เพื่อเพิ่ม XP)" % CharacterClass.UNLOCK_LEVEL)
+		return
+
+	var playable := CharacterClass.all_playable()
+	var picked: CharacterClass.Id = playable[randi() % playable.size()]
+	sheet.choose_class(picked)
+	skills.tree.class_id = picked
+	var branches := SkillDB.branch_names(picked)
+	hud.log_line("พิธีรากทั้งสี่: ได้อาชีพ %s" % CharacterClass.display_name(picked))
+	hud.log_line("  สายย่อย: %s หรือ %s (เลือกที่ Lv13/16/19)" % [branches.get("a", "A"), branches.get("b", "B")])
+	_learn_next_skill()
+
+
+func _learn_next_skill() -> void:
+	var sheet := player.combatant.sheet
+	if sheet.class_id == CharacterClass.Id.NONE:
+		hud.log_line("ยังไม่มีอาชีพ กด Tab เพื่อเข้าพิธีเลือกเส้นทาง")
+		return
+
+	var level := skills.tree.next_choice_level(sheet.level)
+	if level < 0:
+		hud.log_line("เรียนสกิลครบทุกเลเวลที่ปลดล็อกแล้ว")
+		return
+
+	var choices := skills.tree.available_choices(level)
+	if choices.is_empty():
+		hud.log_line("Lv%d ยังไม่มีตัวเลือก — Ultimate ต้องล็อกสายก่อน (เลือกสายเดิม 2 ครั้ง)" % level)
+		return
+
+	var picked: Skill = choices[randi() % choices.size()]
+	if not skills.learn(picked):
+		return
+	hud.log_line("เรียนสกิล Lv%d: %s · %s · %s" % [
+		level, picked.name, picked.cost_text(), picked.cooldown_text()
+	])
+	if skills.tree.is_locked():
+		hud.log_line("  ล็อกเข้าสาย %s แล้ว" % skills.tree.branch_display_name())
+
+
+func _try_skill(event: InputEvent) -> bool:
+	var learned := skills.tree.active_skills()
+	for index in range(SKILL_ACTIONS.size()):
+		if not event.is_action_pressed(SKILL_ACTIONS[index]):
+			continue
+		if index >= learned.size():
+			hud.log_line("ยังไม่มีสกิลในช่องที่ %d" % (index + 1))
+			return true
+		skills.use((learned[index] as Skill).id)
+		return true
+	return false
+
+
+func _on_skill_activated(skill: Skill) -> void:
+	hud.log_line("ใช้ %s (%s)" % [skill.name, skill.cost_text()])
+	if skill.radius() > 0.0:
+		hud.log_line("  เป็นสกิลลงพื้นที่ — ระบบเล็งเป้ามาใน Phase 5")
+
+
+func _on_skill_failed(skill: Skill, reason: String) -> void:
+	hud.log_line("ใช้ %s ไม่ได้: %s" % [skill.name if skill != null else "สกิล", reason])
+
+
+func _on_toggle_changed(skill: Skill, enabled: bool) -> void:
+	hud.log_line("%s: %s" % [skill.name, "เปิด" if enabled else "ปิด"])

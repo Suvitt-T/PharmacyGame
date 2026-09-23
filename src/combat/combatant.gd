@@ -11,6 +11,7 @@ signal damage_taken(amount: float, critical: bool)
 signal attack_evaded()
 signal died()
 signal revived()
+signal shield_changed(current: float)
 
 ## ไม่ระบุในเอกสาร ตัดสินใจเอง: HP ไม่ฟื้นเอง ต้องพึ่งยา/สกิล ตามแก่นเกมเภสัชกรรม
 const MANA_REGEN_PER_SECOND_RATIO := 0.015
@@ -29,6 +30,10 @@ var sheet: CharacterSheet
 var current_hp: float = 0.0
 var current_mana: float = 0.0
 var current_stamina: float = 0.0
+## เกราะดูดซับดาเมจจากสกิล เช่น เกราะรากไม้ของนักรบพฤกษา
+var shield_points: float = 0.0
+## ลดดาเมจที่ได้รับทุกชนิด มาจากสกิล passive และ prop อื่น ๆ (0.0 - 0.9)
+var damage_reduction: float = 0.0
 var is_alive: bool = true
 
 var _rng := RandomNumberGenerator.new()
@@ -69,6 +74,7 @@ func restore_all() -> void:
 	current_mana = sheet.max_mana()
 	current_stamina = sheet.max_stamina()
 	is_alive = true
+	shield_points = 0.0
 	emit_all()
 	if was_dead:
 		revived.emit()
@@ -134,9 +140,32 @@ func apply_attack_result(result: Dictionary) -> void:
 	if result.get("evaded", false):
 		attack_evaded.emit()
 		return
-	var amount := float(result.get("damage", 0.0))
+	var amount := float(result.get("damage", 0.0)) * (1.0 - clampf(damage_reduction, 0.0, 0.9))
+	amount = _absorb_with_shield(amount)
+	if amount <= 0.0:
+		return
 	set_hp(current_hp - amount)
 	damage_taken.emit(amount, bool(result.get("critical", false)))
+
+
+## เกราะกินดาเมจก่อน ที่เหลือจึงลง HP
+func _absorb_with_shield(amount: float) -> float:
+	if shield_points <= 0.0:
+		return amount
+	var absorbed := minf(shield_points, amount)
+	shield_points -= absorbed
+	shield_changed.emit(shield_points)
+	return amount - absorbed
+
+
+func add_shield(amount: float) -> void:
+	shield_points = maxf(shield_points + amount, 0.0)
+	shield_changed.emit(shield_points)
+
+
+func clear_shield() -> void:
+	shield_points = 0.0
+	shield_changed.emit(shield_points)
 
 
 func _on_stats_changed() -> void:

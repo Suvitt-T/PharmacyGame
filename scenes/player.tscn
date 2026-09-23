@@ -1,10 +1,11 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://src/actors/player_controller.gd" id="1_player"]
 [ext_resource type="Script" path="res://src/combat/combatant.gd" id="2_combatant"]
 [ext_resource type="Script" path="res://src/actors/actor_visuals.gd" id="3_visuals"]
 [ext_resource type="Script" path="res://src/pharmacy/metabolism.gd" id="5_metabolism"]
 [ext_resource type="Script" path="res://src/items/inventory_component.gd" id="6_inventory"]
+[ext_resource type="Script" path="res://src/skills/skill_runtime.gd" id="7_skills"]
 [ext_resource type="PackedScene" path="res://assets/models/monsters/Ninja.gltf" id="4_model"]
 
 [sub_resource type="CapsuleShape3D" id="PlayerShape"]
@@ -40,6 +41,9 @@ script = ExtResource("5_metabolism")
 
 [node name="InventoryComponent" type="Node" parent="."]
 script = ExtResource("6_inventory")
+
+[node name="SkillRuntime" type="Node" parent="."]
+script = ExtResource("7_skills")
 
 [node name="AttackHitbox" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 1.1)
