@@ -1,0 +1,60 @@
+{
+  "_note": "สารสกัดย่อส่วนสำหรับเสียบ Vial Slot คราฟต์จากวัตถุดิบชุดเดียวกับระบบยา ทำให้การเก็บวัตถุดิบมีประโยชน์กับทั้งสองระบบพร้อมกัน ตามหัวข้อ Itemization ในเอกสาร ผลของแต่ละหลอดอ้างอิงกลไกจริงของสารนั้น และตั้งค่าให้เล็กเพราะเป็นบัฟถาวร",
+
+  "caffeine_vial": {
+    "display_name": "สารสกัดคาเฟอีน",
+    "ingredient": "guarana_seed",
+    "units_required": 6,
+    "effect": {"kind": "crit_percent", "magnitude": 2.5},
+    "note": "ตื่นตัวขึ้น มือแม่นขึ้น — ตรงกับตัวอย่างในเอกสาร"
+  },
+  "salicin_vial": {
+    "display_name": "สารสกัดเปลือกหลิว",
+    "ingredient": "willow_bark",
+    "units_required": 8,
+    "effect": {"kind": "dot_resistance", "magnitude": 0.12},
+    "note": "ลดดาเมจต่อเนื่องที่ได้รับ — ตรงกับตัวอย่างในเอกสาร"
+  },
+  "penicillin_vial": {
+    "display_name": "สารสกัดเพนิซิลลิน",
+    "ingredient": "penicillium_mold",
+    "units_required": 6,
+    "effect": {"kind": "status_resistance", "magnitude": 0.15, "status": "infection"},
+    "note": "ต้านการติดเชื้อจากแผลของสัตว์ปนเปื้อน"
+  },
+  "quinine_vial": {
+    "display_name": "สารสกัดซิงโคนา",
+    "ingredient": "cinchona_bark",
+    "units_required": 7,
+    "effect": {"kind": "status_resistance", "magnitude": 0.18, "status": "cyclic_fever"},
+    "note": "กันไข้จับสั่นจากพาหะในหนองน้ำ"
+  },
+  "atropine_vial": {
+    "display_name": "สารสกัดเบลลาดอนนา",
+    "ingredient": "belladonna_flower",
+    "units_required": 5,
+    "effect": {"kind": "status_resistance", "magnitude": 0.20, "status": "cholinergic_crisis"},
+    "note": "บล็อกตัวรับไว้ล่วงหน้า พิษเข้าจับได้น้อยลง"
+  },
+  "morphine_vial": {
+    "display_name": "สารสกัดป๊อปปี้",
+    "ingredient": "poppy_resin",
+    "units_required": 5,
+    "effect": {"kind": "stat_bonus", "magnitude": 3.0, "stat": "vitality"},
+    "note": "ทนความเจ็บได้มากขึ้น แต่ไม่ได้ทำให้แผลหายเร็วขึ้น"
+  },
+  "warfarin_vial": {
+    "display_name": "สารสกัดคลาวเวอร์รา",
+    "ingredient": "moldy_clover",
+    "units_required": 6,
+    "effect": {"kind": "crit_percent", "magnitude": 4.0},
+    "note": "แผลที่เปิดแล้วหยุดยาก ดาเมจวิกฤตจึงเข้าหนักกว่าเดิม"
+  },
+  "digoxin_vial": {
+    "display_name": "สารสกัดฟ็อกซ์โกลฟ",
+    "ingredient": "foxglove_flower",
+    "units_required": 4,
+    "effect": {"kind": "stat_bonus", "magnitude": 4.0, "stat": "strength"},
+    "note": "หัวใจบีบตัวแรงขึ้น เลือดไปเลี้ยงกล้ามเนื้อดีขึ้น — ขนาดจิ๋วเท่านั้นจึงปลอดภัย"
+  }
+}

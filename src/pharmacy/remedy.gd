@@ -55,6 +55,11 @@ func is_inert() -> bool:
 	return substance().efficiency_for(method) < Preparation.FAILED_EFFICIENCY
 
 
+## ยาที่ปรุงจากวัตถุดิบเดียวกัน วิธีเดียวกัน จำนวนเท่ากัน และ potency ใกล้กัน ถือว่าซ้อนกันได้
+func stack_key() -> String:
+	return "%s|%d|%d|%.2f" % [ingredient_id, int(method), unit_count, snappedf(potency, 0.05)]
+
+
 func display_name() -> String:
 	var source := PharmacyDB.ingredient(ingredient_id)
 	var source_name := source.display_name if source != null else substance_id

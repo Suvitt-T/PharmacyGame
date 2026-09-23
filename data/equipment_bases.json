@@ -1,0 +1,63 @@
+{
+  "_note": "ฐานอุปกรณ์ scaling_stat คือ Stat ที่ affix ของมันจะเข้าสูตร FinalStat ส่วน affix ตัวอื่นให้ผลตรง ๆ ไม่เข้าสูตร ดู affix.gd",
+
+  "_slots": ["weapon", "head", "chest", "legs", "feet", "trinket"],
+
+  "root_blade": {
+    "display_name": "ดาบรากไม้",
+    "slot": "weapon",
+    "kind": "weapon",
+    "scaling_stat": "strength",
+    "lore": "ดาบที่หลอมจากแก่นรากแข็งของต้นไม้โลก"
+  },
+  "apothecary_stave": {
+    "display_name": "ไม้เท้าเภสัชกร",
+    "slot": "weapon",
+    "kind": "weapon",
+    "scaling_stat": "intellect",
+    "lore": "ปลายไม้เท้ากลวงไว้บรรจุสารสกัด ใช้ทั้งตีและปรุงยา"
+  },
+  "thorn_spear": {
+    "display_name": "หอกหนาม",
+    "slot": "weapon",
+    "kind": "weapon",
+    "scaling_stat": "agility",
+    "lore": "ด้ามเรียวเบา ปลายเป็นหนามพืชที่แข็งกว่าเหล็ก"
+  },
+
+  "bark_helm": {
+    "display_name": "หมวกเปลือกไม้",
+    "slot": "head",
+    "kind": "armor",
+    "scaling_stat": "vitality",
+    "lore": "เปลือกไม้อัดชั้นหนา เบาแต่ทนแรงกระแทก"
+  },
+  "bark_cuirass": {
+    "display_name": "เกราะอกเปลือกไม้",
+    "slot": "chest",
+    "kind": "armor",
+    "scaling_stat": "vitality",
+    "lore": "เกราะอกที่ถักจากรากเหนียว"
+  },
+  "root_greaves": {
+    "display_name": "เกราะขารากไม้",
+    "slot": "legs",
+    "kind": "armor",
+    "scaling_stat": "vitality",
+    "lore": "ปลอกขาที่รากพันรัดไว้แน่น"
+  },
+  "moss_boots": {
+    "display_name": "รองเท้ามอส",
+    "slot": "feet",
+    "kind": "armor",
+    "scaling_stat": "agility",
+    "lore": "พื้นมอสหนา เดินในป่าแทบไม่มีเสียง"
+  },
+  "herbalist_satchel": {
+    "display_name": "ย่ามนักสมุนไพร",
+    "slot": "trinket",
+    "kind": "armor",
+    "scaling_stat": "intellect",
+    "lore": "ย่ามหนังที่แบ่งช่องเก็บวัตถุดิบไว้ไม่ให้ปนกัน"
+  }
+}

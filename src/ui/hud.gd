@@ -14,9 +14,11 @@ var _stamina_bar: ProgressBar
 var _xp_bar: ProgressBar
 var _header: Label
 var _stat_label: Label
+var _gear_label: Label
 var _log_label: Label
 
 var _combatant: Combatant
+var _inventory: InventoryComponent
 var _log_lines: Array[String] = []
 
 
@@ -42,11 +44,14 @@ func _ready() -> void:
 	_stat_label = Label.new()
 	column.add_child(_stat_label)
 
+	_gear_label = Label.new()
+	column.add_child(_gear_label)
+
 	var hint := Label.new()
 	hint.text = "WASD เดิน · Shift วิ่ง · Space หลบ · คลิกซ้าย โจมตี · X +XP · C ดาเมจตัวเอง · R respec"
 
 	var remedy_hint := Label.new()
-	remedy_hint.text = "ยาทดลอง — 1 หลิวพอดี · 2 หลิวเกินขนาด · 3 กัวรานา · 4 ซิงโคนา · 5 ฟ็อกซ์โกลฟฉีด (ลอง 4 แล้ว 5 ติดกัน)"
+	remedy_hint.text = "ยาทดลอง — 1 หลิวพอดี · 2 หลิวเกินขนาด · 3 กัวรานา · 4 ซิงโคนา · 5 ฟ็อกซ์โกลฟฉีด (ลอง 4 แล้ว 5 ติดกัน) · E สุ่มดรอป · V เสียบ Vial"
 	remedy_hint.add_theme_font_size_override("font_size", 12)
 	remedy_hint.modulate = Color(1, 1, 1, 0.65)
 	column.add_child(remedy_hint)
@@ -90,6 +95,13 @@ func _make_bar(parent: Control, label_text: String, color: Color) -> ProgressBar
 	return bar
 
 
+func bind_inventory(component: InventoryComponent) -> void:
+	_inventory = component
+	component.inventory.changed.connect(_refresh)
+	component.loadout.changed.connect(_refresh)
+	_refresh()
+
+
 func bind_player(combatant: Combatant) -> void:
 	_combatant = combatant
 	combatant.hp_changed.connect(func(c, m): _update_bar(_hp_bar, c, m))
@@ -124,6 +136,13 @@ func _refresh() -> void:
 		str(stats), sheet.crit_chance(), sheet.evasion_chance(),
 		sheet.unspent_points(), int(sheet.therapeutic_window_bonus())
 	]
+	if _inventory != null:
+		var loadout := _inventory.loadout
+		_gear_label.text = "ดาเมจอาวุธ %.1f · ป้องกัน %.1f · กระเป๋า %d/%d · %d RC · Vial %d ช่อง" % [
+			loadout.weapon_damage(_inventory.unarmed_damage), loadout.total_defense(),
+			_inventory.inventory.used_slots(), _inventory.inventory.bag_capacity,
+			_inventory.inventory.root_coins, loadout.total_vial_slots()
+		]
 
 
 func log_line(text: String) -> void:

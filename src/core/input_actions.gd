@@ -35,6 +35,8 @@ const DEBUG_BINDINGS := {
 	"remedy_3": [KEY_3],
 	"remedy_4": [KEY_4],
 	"remedy_5": [KEY_5],
+	"debug_roll_loot": [KEY_E],
+	"debug_insert_vial": [KEY_V],
 }
 
 static var _registered := false

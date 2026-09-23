@@ -20,6 +20,7 @@ const SPAWN_TABLE := [
 @onready var enemy_root: Node3D = $Enemies
 @onready var hub: HubWorld = $HubWorld
 @onready var metabolism: Metabolism = $Player/Metabolism
+@onready var inventory_component: InventoryComponent = $Player/InventoryComponent
 
 ## ยาตัวอย่างสำหรับทดลองระบบใน Phase 2 — หน้าจอปรุงยาจริงมาใน Phase 3
 const TEST_REMEDIES := {
@@ -37,11 +38,13 @@ func _ready() -> void:
 	player.add_to_group("player")
 	player.combatant.sheet.character_name = "ผู้ตื่น"
 	hud.bind_player(player.combatant)
+	hud.bind_inventory(inventory_component)
 	player.combatant.damage_taken.connect(_on_player_damaged)
 	player.combatant.died.connect(_on_player_died)
 	metabolism.remedy_administered.connect(_on_remedy_administered)
 	metabolism.interaction_triggered.connect(_on_interaction_triggered)
 	metabolism.effect_ended.connect(_on_effect_ended)
+	_give_starting_kit()
 	_spawn_wave()
 
 
@@ -98,6 +101,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		_auto_allocate_points()
 	elif event.is_action_pressed("debug_damage_self"):
 		player.combatant.set_hp(player.combatant.current_hp - 40.0)
+	elif event.is_action_pressed("debug_roll_loot"):
+		_roll_loot()
+	elif event.is_action_pressed("debug_insert_vial"):
+		_insert_vial()
 	elif _try_remedy(event):
 		return
 	elif event.is_action_pressed("debug_respec"):
@@ -152,3 +159,58 @@ func _on_interaction_triggered(rule: Dictionary) -> void:
 
 func _on_effect_ended(effect: ActiveEffect) -> void:
 	hud.log_line("%s หมดฤทธิ์" % effect.substance().display_name)
+
+
+# --- ไอเทมและกระเป๋า ---
+
+## ของเริ่มต้นสำหรับทดลองระบบ — ระบบเก็บของและร้านค้าจริงมาใน Phase ถัดไป
+func _give_starting_kit() -> void:
+	var inventory := inventory_component.inventory
+	for ingredient in PharmacyDB.all_ingredients():
+		inventory.add_ingredient((ingredient as Ingredient).id, 40)
+
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 1
+	for base_id in ["root_blade", "bark_cuirass", "bark_helm"]:
+		inventory.add_equipment(ItemDB.roll_equipment(base_id, ItemTier.Tier.COMMON, 1, rng))
+	while inventory_component.equip_from_bag(0):
+		pass
+	hud.log_line("ได้ชุดเริ่มต้นและวัตถุดิบครบ 8 ชนิด อย่างละ 40 ชิ้น")
+
+
+func _roll_loot() -> void:
+	var sheet := player.combatant.sheet
+	var rng := RandomNumberGenerator.new()
+	rng.randomize()
+	var tier: ItemTier.Tier = ItemTier.all()[rng.randi() % ItemTier.all().size()]
+	var base_ids := ItemDB.all_equipment_ids()
+	var base_id: String = base_ids[rng.randi() % base_ids.size()]
+	var loot := ItemDB.roll_equipment(base_id, tier, sheet.level + 4, rng)
+
+	var current := inventory_component.loadout.item_in(loot.slot())
+	var is_upgrade := current == null or loot.final_value() > current.final_value()
+
+	inventory_component.inventory.add_equipment(loot)
+	hud.log_line("ดรอป: %s · %s %.1f" % [
+		loot.display_name(), "ดาเมจ" if loot.is_weapon() else "ป้องกัน", loot.final_value()
+	])
+	for affix in loot.affixes:
+		hud.log_line("   " + affix.to_text())
+
+	if is_upgrade:
+		inventory_component.equip_from_bag(inventory_component.inventory.bag.size() - 1)
+		hud.log_line("   สวมใส่แล้ว (ดีกว่าของเดิม)")
+
+
+func _insert_vial() -> void:
+	for slot in ["weapon", "chest", "head"]:
+		var item := inventory_component.loadout.item_in(slot)
+		if item == null or item.free_vial_slots() <= 0:
+			continue
+		for vial_id in ItemDB.all_vial_ids():
+			if inventory_component.craft_and_insert_vial(vial_id, slot):
+				hud.log_line("เสียบ %s ลง %s" % [
+					str(ItemDB.vial(vial_id)["display_name"]), item.display_name()
+				])
+				return
+	hud.log_line("ไม่มีช่อง Vial ว่าง — ต้องของ Rare ขึ้นไป (กด E หาของใหม่)")

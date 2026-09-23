@@ -22,6 +22,9 @@ var allocated: StatBlock = StatBlock.new()
 ## โบนัสชั่วคราวจากยาและบัฟ ระบบเภสัชกรรมเขียนลงตรงนี้ ไม่แตะ allocated
 var temporary: StatBlock = StatBlock.new()
 
+## โบนัสจากอุปกรณ์ที่สวมอยู่ ระบบไอเทมเขียนลงตรงนี้
+var equipment: StatBlock = StatBlock.new()
+
 
 func _init(p_level: int = 1) -> void:
 	level = clampi(p_level, 1, Progression.MAX_LEVEL)
@@ -45,7 +48,7 @@ func class_bonus() -> StatBlock:
 
 
 func final_stats() -> StatBlock:
-	return base_stats().plus(allocated).plus(class_bonus()).plus(temporary)
+	return base_stats().plus(allocated).plus(class_bonus()).plus(temporary).plus(equipment)
 
 
 func spent_points() -> int:
