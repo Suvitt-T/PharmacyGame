@@ -122,7 +122,7 @@ func add_xp(amount: int) -> int:
 
 
 func xp_into_current_level() -> int:
-	return total_xp - Progression.cumulative_xp_for(level)
+	return maxi(total_xp - Progression.cumulative_xp_for(level), 0)
 
 
 func xp_needed_for_next_level() -> int:

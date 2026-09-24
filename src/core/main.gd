@@ -24,6 +24,7 @@ const SPAWN_TABLE := [
 @onready var metabolism: Metabolism = $Player/Metabolism
 @onready var inventory_component: InventoryComponent = $Player/InventoryComponent
 @onready var skills: SkillRuntime = $Player/SkillRuntime
+@onready var skill_executor: SkillExecutor = $Player/SkillExecutor
 
 const SKILL_ACTIONS := ["skill_1", "skill_2", "skill_3", "skill_4", "skill_5"]
 
@@ -52,6 +53,7 @@ func _ready() -> void:
 	skills.skill_activated.connect(_on_skill_activated)
 	skills.skill_failed.connect(_on_skill_failed)
 	skills.toggle_changed.connect(_on_toggle_changed)
+	skill_executor.skill_resolved.connect(_on_skill_resolved)
 	hud.bind_skills(skills)
 	_give_starting_kit()
 	_spawn_wave()
@@ -306,8 +308,17 @@ func _try_skill(event: InputEvent) -> bool:
 
 func _on_skill_activated(skill: Skill) -> void:
 	hud.log_line("ใช้ %s (%s)" % [skill.name, skill.cost_text()])
-	if skill.radius() > 0.0:
-		hud.log_line("  เป็นสกิลลงพื้นที่ — ระบบเล็งเป้ามาใน Phase 5")
+
+
+func _on_skill_resolved(skill: Skill, hits: int, total_damage: float) -> void:
+	if hits <= 0:
+		if skill.radius() > 0.0 or skill.effect_kind() == "apply_dot":
+			hud.log_line("  ไม่โดนใครเลย — ไม่มีศัตรูในระยะ")
+		return
+	if total_damage > 0.0:
+		hud.log_line("  โดน %d ตัว รวม %d ดาเมจ" % [hits, roundi(total_damage)])
+	else:
+		hud.log_line("  ส่งผลกับ %d ตัว" % hits)
 
 
 func _on_skill_failed(skill: Skill, reason: String) -> void:

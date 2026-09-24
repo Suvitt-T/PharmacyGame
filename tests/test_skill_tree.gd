@@ -166,3 +166,24 @@ func test_save_roundtrip() -> void:
 	runner.equal_int(restored.learned_skills().size(), 3, "สกิลกลับมาครบ")
 	runner.ok(restored.locked_branch() == "b", "สายที่ล็อกไว้กลับมาด้วย")
 	runner.ok(restored.has_skill("alch_forbidden_formula"), "สกิลเฉพาะตัวกลับมาถูก")
+
+
+## สกิลทุกตัวต้องมีท่าเล่น ไม่งั้นผู้เล่นกดแล้วไม่เห็นอะไรเกิดขึ้น
+func test_every_active_skill_has_an_animation() -> void:
+	for entry in SkillDB.all_skills():
+		var skill: Skill = entry
+		if skill.kind == Skill.Kind.PASSIVE:
+			runner.ok(skill.animation_state().is_empty(), "%s เป็น Passive ไม่ต้องมีท่า" % skill.id)
+			continue
+		var state: String = skill.animation_state()
+		runner.ok(
+			ActorVisuals.STATE_ANIMATION.has(state),
+			"%s ใช้ท่าที่มีอยู่จริง (%s)" % [skill.id, state]
+		)
+
+
+func test_offensive_and_support_skills_use_different_animations() -> void:
+	runner.ok(SkillDB.skill("tox_venom_needle").animation_state() == "skill_attack", "เข็มพิษใช้ท่าโจมตี")
+	runner.ok(SkillDB.skill("alch_firebrand_flask").animation_state() == "skill_attack", "ขวดเพลิงใช้ท่าโจมตี")
+	runner.ok(SkillDB.skill("medic_first_aid").animation_state() == "cast", "ปฐมพยาบาลใช้ท่าร่าย")
+	runner.ok(SkillDB.skill("vang_root_armor").animation_state() == "cast", "เกราะรากไม้ใช้ท่าร่าย")

@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://src/actors/enemy.gd" id="1_enemy"]
 [ext_resource type="Script" path="res://src/combat/combatant.gd" id="2_combatant"]
 [ext_resource type="Script" path="res://src/actors/actor_visuals.gd" id="3_visuals"]
+[ext_resource type="Script" path="res://src/pharmacy/metabolism.gd" id="5_metabolism"]
 [ext_resource type="PackedScene" path="res://assets/models/monsters/Cactoro.gltf" id="4_model"]
 
 [sub_resource type="CapsuleShape3D" id="EnemyShape"]
@@ -28,3 +29,6 @@ script = ExtResource("2_combatant")
 starting_level = 1
 weapon_base_damage = 8.0
 defense = 2.0
+
+[node name="Metabolism" type="Node" parent="."]
+script = ExtResource("5_metabolism")

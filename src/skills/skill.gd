@@ -86,6 +86,18 @@ func can_reveal_vitals() -> bool:
 	return effect_kind() == "reveal_vitals"
 
 
+## ท่าที่ควรเล่นตอนใช้สกิล สกิลโจมตีใช้ท่าอาวุธ สกิลสนับสนุนใช้ท่าร่าย
+const OFFENSIVE_EFFECTS := [
+	"skill_damage", "apply_dot", "execute_dot", "spreading_aoe_dot", "dash_attack",
+]
+
+
+func animation_state() -> String:
+	if kind == Kind.PASSIVE:
+		return ""
+	return "skill_attack" if OFFENSIVE_EFFECTS.has(effect_kind()) else "cast"
+
+
 func cost_text() -> String:
 	if kind == Kind.TOGGLE:
 		return "%d Mana/วิ" % int(mana_per_second)

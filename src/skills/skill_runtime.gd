@@ -14,11 +14,13 @@ signal cooldown_changed(skill_id: String, remaining: float)
 
 @export var combatant_path: NodePath = NodePath("../Combatant")
 @export var metabolism_path: NodePath = NodePath("../Metabolism")
+@export var visuals_path: NodePath = NodePath("../Visuals")
 
 var tree := SkillTree.new()
 
 var _combatant: Combatant
 var _metabolism: Metabolism
+var _visuals: ActorVisuals
 ## skill_id -> วินาทีที่เหลือ
 var _cooldowns: Dictionary = {}
 ## skill_id -> จำนวนครั้งที่ใช้ไปแล้วในไฟต์นี้
@@ -32,6 +34,7 @@ func _ready() -> void:
 	SkillDB.ensure_loaded()
 	_combatant = get_node_or_null(combatant_path) as Combatant
 	_metabolism = get_node_or_null(metabolism_path) as Metabolism
+	_visuals = get_node_or_null(visuals_path) as ActorVisuals
 	if _combatant != null:
 		tree.class_id = _combatant.sheet.class_id
 		_combatant.died.connect(end_fight)
@@ -81,6 +84,8 @@ func use(skill_id: String) -> bool:
 		_uses_this_fight[skill.id] = int(_uses_this_fight.get(skill.id, 0)) + 1
 
 	_apply_self_effect(skill)
+	if _visuals != null and not skill.animation_state().is_empty():
+		_visuals.play_state(skill.animation_state())
 	skill_activated.emit(skill)
 	return true
 
@@ -123,6 +128,8 @@ func is_toggled(skill_id: String) -> bool:
 func _set_toggle(skill: Skill, enabled: bool) -> bool:
 	if enabled:
 		_active_toggles[skill.id] = true
+		if _visuals != null:
+			_visuals.play_state("cast")
 	else:
 		_active_toggles.erase(skill.id)
 	toggle_changed.emit(skill, enabled)

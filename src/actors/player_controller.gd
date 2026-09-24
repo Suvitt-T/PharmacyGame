@@ -149,4 +149,14 @@ func _scan_hitbox() -> void:
 		if target == null or target in _already_hit or not target.is_alive:
 			continue
 		_already_hit.append(target)
-		combatant.attack(target)
+		var result := combatant.attack(target)
+		if result.is_empty():
+			continue
+		var origin: Node3D = body as Node3D
+		if result.get("evaded", false):
+			DamageNumber.spawn(self, origin.global_position + Vector3.UP * 1.6, 0.0, "miss")
+		else:
+			DamageNumber.spawn(
+				self, origin.global_position + Vector3.UP * 1.6, float(result["damage"]),
+				"critical" if result.get("critical", false) else "normal"
+			)

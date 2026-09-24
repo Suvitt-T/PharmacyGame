@@ -17,6 +17,25 @@ const DEFAULT_STATUS_SECONDS := 8.0
 
 ## สถานะที่กัด HP ต่อเนื่อง Blight มาจากตาราง Corruption Aura ในเอกสาร
 ## ตัวอื่นไม่ระบุตัวเลขไว้ ตัดสินใจเอง โดยให้เบากว่า Blight เพราะมาจากศัตรูธรรมดา
+const STATUS_NAME := {
+	"blight": "ธุลีเน่า",
+	"venom": "พิษ",
+	"cyclic_fever": "ไข้จับสั่น",
+	"infection": "ติดเชื้อ",
+	"inflammation": "อักเสบ",
+	"pain": "ปวด",
+	"cholinergic_crisis": "พิษโคลิเนอร์จิก",
+	"anticholinergic_delirium": "เพ้อจากยาแก้พิษ",
+	"respiratory_depression": "กดการหายใจ",
+	"cinchonism": "ซิงโคนิซึม",
+	"thinned_blood": "เลือดใส",
+}
+
+
+static func status_name(status: String) -> String:
+	return STATUS_NAME.get(status, status)
+
+
 const STATUS_DAMAGE_PER_SECOND := {
 	"blight": 5.0,
 	"venom": 3.0,

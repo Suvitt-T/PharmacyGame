@@ -13,10 +13,13 @@ const STATE_ANIMATION := {
 	"hurt": "HitReact",
 	"dodge": "Jump",
 	"die": "Death",
+	## ท่าสกิล แยกจากท่าตีปกติเพื่อให้ผู้เล่นแยกออกว่ากดอะไรไป
+	"skill_attack": "Weapon",
+	"cast": "Wave",
 }
 
 ## สถานะที่เล่นจบแล้วกลับไปสถานะการเคลื่อนที่เอง
-const ONE_SHOT_STATES := ["attack", "hurt", "dodge"]
+const ONE_SHOT_STATES := ["attack", "hurt", "dodge", "skill_attack", "cast"]
 
 const WALK_THRESHOLD := 0.2
 const RUN_THRESHOLD := 6.0

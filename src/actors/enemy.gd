@@ -35,6 +35,7 @@ var _combo_left := 0
 var _called_help := false
 var _flank_offset := 0.0
 var _killed_by_venom := false
+var _root_timer := 0.0
 var _rng := RandomNumberGenerator.new()
 
 
@@ -84,8 +85,15 @@ func _physics_process(delta: float) -> void:
 		return
 	_cooldown = maxf(_cooldown - delta, 0.0)
 	_state_timer = maxf(_state_timer - delta, 0.0)
+	_root_timer = maxf(_root_timer - delta, 0.0)
 	_acquire_target()
 	_apply_gravity(delta)
+
+	if is_rooted():
+		_halt()
+		move_and_slide()
+		visuals.update_locomotion(0.0)
+		return
 
 	if _target == null:
 		_set_state(State.IDLE)
@@ -317,6 +325,15 @@ func is_cornered() -> bool:
 
 func mark_killed_by_venom() -> void:
 	_killed_by_venom = true
+
+
+## ถูกตรึงกับพื้น ขยับไม่ได้แต่ยังเสียดาเมจได้ตามปกติ
+func apply_root(seconds: float) -> void:
+	_root_timer = maxf(_root_timer, seconds)
+
+
+func is_rooted() -> bool:
+	return _root_timer > 0.0
 
 
 # --- การเคลื่อนที่ ---
