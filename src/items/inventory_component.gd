@@ -9,16 +9,19 @@ signal equipment_changed(slot: String, equipment: Equipment)
 ## ดาเมจติดตัวเมื่อไม่ได้ถืออาวุธ — เอกสารระบุว่าบทนำต่อสู้ด้วยมือเปล่าได้
 @export var unarmed_damage: float = 6.0
 @export var combatant_path: NodePath = NodePath("../Combatant")
+@export var metabolism_path: NodePath = NodePath("../Metabolism")
 
 var inventory := Inventory.new()
 var loadout := Loadout.new()
 
 var _combatant: Combatant
+var _metabolism: Metabolism
 
 
 func _ready() -> void:
 	ItemDB.ensure_loaded()
 	_combatant = get_node_or_null(combatant_path) as Combatant
+	_metabolism = get_node_or_null(metabolism_path) as Metabolism
 	loadout.changed.connect(_sync_to_combatant)
 	_sync_to_combatant()
 
@@ -89,3 +92,18 @@ func _sync_to_combatant() -> void:
 	_combatant.defense = loadout.total_defense()
 	_combatant.sheet.equipment = loadout.total_stat_bonus()
 	_combatant.sheet.stats_changed.emit()
+	if _metabolism != null:
+		_metabolism.gear_dot_resistance = loadout.dot_resistance()
+		_metabolism.gear_status_resistance = _gear_status_resistances()
+
+
+## รวมความต้านทานสถานะจากหลอดสารสกัดทุกชิ้นที่สวมอยู่
+func _gear_status_resistances() -> Dictionary:
+	var totals := {}
+	for item in loadout.all_items():
+		for effect in item.vial_effects():
+			if str(effect.get("kind", "")) != "status_resistance":
+				continue
+			var status := str(effect.get("status", ""))
+			totals[status] = float(totals.get(status, 0.0)) + float(effect.get("magnitude", 0.0))
+	return totals

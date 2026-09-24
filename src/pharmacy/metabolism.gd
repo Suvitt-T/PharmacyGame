@@ -15,12 +15,25 @@ signal interaction_triggered(rule: Dictionary)
 ## ส่วนสถานะจากศัตรู (เช่น Blight DOT) มีเวลาของตัวเองที่ผู้เรียกกำหนด
 const DEFAULT_STATUS_SECONDS := 8.0
 
+## สถานะที่กัด HP ต่อเนื่อง Blight มาจากตาราง Corruption Aura ในเอกสาร
+## ตัวอื่นไม่ระบุตัวเลขไว้ ตัดสินใจเอง โดยให้เบากว่า Blight เพราะมาจากศัตรูธรรมดา
+const STATUS_DAMAGE_PER_SECOND := {
+	"blight": 5.0,
+	"venom": 3.0,
+	"cyclic_fever": 2.5,
+	"respiratory_depression": 6.0,
+	"cinchonism": 1.5,
+}
+
 @export var combatant_path: NodePath = NodePath("../Combatant")
 
 var _combatant: Combatant
 var _effects: Array[ActiveEffect] = []
 var _statuses: Dictionary = {}
 var _resistances: Dictionary = {}
+## ความต้านทานจากหลอดสารสกัดที่เสียบในอุปกรณ์ InventoryComponent เป็นคนเขียน
+var gear_status_resistance: Dictionary = {}
+var gear_dot_resistance: float = 0.0
 
 
 func _ready() -> void:
@@ -82,8 +95,8 @@ func clear_all() -> void:
 # --- สถานะผิดปกติ ---
 
 func apply_status(status: String, seconds: float = DEFAULT_STATUS_SECONDS) -> void:
-	var resisted := float(_resistances.get(status, 0.0))
-	var final_seconds := seconds * (1.0 - clampf(resisted, 0.0, 1.0))
+	var resisted := float(_resistances.get(status, 0.0)) + float(gear_status_resistance.get(status, 0.0))
+	var final_seconds := seconds * (1.0 - clampf(resisted, 0.0, 0.95))
 	if final_seconds <= 0.0:
 		return
 	var already := _statuses.has(status)
@@ -115,11 +128,22 @@ func resistance_to(status: String) -> float:
 
 func _tick_statuses(delta: float) -> void:
 	for status in _statuses.keys():
+		_apply_status_damage(status, delta)
 		var remaining := float(_statuses[status]) - delta
 		if remaining <= 0.0:
 			clear_status(status)
 		else:
 			_statuses[status] = remaining
+
+
+func _apply_status_damage(status: String, delta: float) -> void:
+	if _combatant == null or not _combatant.is_alive:
+		return
+	var per_second := float(STATUS_DAMAGE_PER_SECOND.get(status, 0.0))
+	if per_second <= 0.0:
+		return
+	var reduced := per_second * (1.0 - clampf(gear_dot_resistance, 0.0, 0.9))
+	_combatant.set_hp(_combatant.current_hp - reduced * delta)
 
 
 func _tick_effects(delta: float) -> void:

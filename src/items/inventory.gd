@@ -19,6 +19,7 @@ var root_coins: int = STARTING_ROOT_COINS
 ## แต่ละช่องเป็น {"kind": "equipment"|"remedy", "item": ..., "count": int}
 var bag: Array[Dictionary] = []
 ## วัตถุดิบดิบ ไม่จำกัดจำนวนและไม่กินช่องกระเป๋า
+## โครงสร้าง: ingredient_id -> { "<potency>": จำนวน }
 var herbarium: Dictionary = {}
 var quest_items: Array[String] = []
 ## เก็บ index ของช่องในกระเป๋า -1 คือว่าง
@@ -32,31 +33,73 @@ func _init() -> void:
 
 # --- Herbarium ---
 
-func add_ingredient(ingredient_id: String, count: int = 1) -> void:
+func add_ingredient(ingredient_id: String, count: int = 1, potency: float = 1.0) -> void:
 	if count <= 0:
 		return
-	herbarium[ingredient_id] = ingredient_count(ingredient_id) + count
+	var buckets: Dictionary = herbarium.get(ingredient_id, {})
+	var key := _potency_key(potency)
+	buckets[key] = int(buckets.get(key, 0)) + count
+	herbarium[ingredient_id] = buckets
 	changed.emit()
 
 
-func ingredient_count(ingredient_id: String) -> int:
-	return int(herbarium.get(ingredient_id, 0))
+## potency เก็บแยกถังเพราะวัตถุดิบจากแหล่งต่างกันให้สารออกฤทธิ์ไม่เท่ากัน
+## ส่ง potency ลบมาเพื่อนับรวมทุกถัง
+func ingredient_count(ingredient_id: String, potency: float = -1.0) -> int:
+	var buckets: Dictionary = herbarium.get(ingredient_id, {})
+	if potency >= 0.0:
+		return int(buckets.get(_potency_key(potency), 0))
+	var total := 0
+	for key in buckets:
+		total += int(buckets[key])
+	return total
 
 
-func has_ingredients(ingredient_id: String, count: int) -> bool:
-	return ingredient_count(ingredient_id) >= count
+func potency_buckets(ingredient_id: String) -> Dictionary:
+	return herbarium.get(ingredient_id, {}).duplicate()
 
 
-func consume_ingredients(ingredient_id: String, count: int) -> bool:
-	if not has_ingredients(ingredient_id, count):
+func best_potency(ingredient_id: String) -> float:
+	var best := 0.0
+	for key in herbarium.get(ingredient_id, {}):
+		best = maxf(best, float(key))
+	return best
+
+
+func has_ingredients(ingredient_id: String, count: int, potency: float = -1.0) -> bool:
+	return ingredient_count(ingredient_id, potency) >= count
+
+
+## ไม่ระบุถัง = ใช้ของ potency ต่ำก่อน เก็บของดีไว้ให้ผู้เล่นเลือกใช้ตอนจำเป็น
+func consume_ingredients(ingredient_id: String, count: int, potency: float = -1.0) -> bool:
+	if not has_ingredients(ingredient_id, count, potency):
 		return false
-	var remaining := ingredient_count(ingredient_id) - count
-	if remaining <= 0:
+	var buckets: Dictionary = herbarium.get(ingredient_id, {})
+	var order := buckets.keys()
+	order.sort_custom(func(a, b): return float(a) < float(b))
+	if potency >= 0.0:
+		order = [_potency_key(potency)]
+
+	var remaining := count
+	for key in order:
+		if remaining <= 0:
+			break
+		var taken: int = mini(int(buckets[key]), remaining)
+		buckets[key] = int(buckets[key]) - taken
+		remaining -= taken
+		if int(buckets[key]) <= 0:
+			buckets.erase(key)
+
+	if buckets.is_empty():
 		herbarium.erase(ingredient_id)
 	else:
-		herbarium[ingredient_id] = remaining
+		herbarium[ingredient_id] = buckets
 	changed.emit()
 	return true
+
+
+func _potency_key(potency: float) -> String:
+	return "%.2f" % snappedf(maxf(potency, 0.0), 0.05)
 
 
 # --- กระเป๋าหลัก ---

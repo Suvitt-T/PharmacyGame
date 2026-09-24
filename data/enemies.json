@@ -1,0 +1,99 @@
+{
+  "_note": "ศัตรูรายตัวต่อพื้นที่ตามเอกสาร หัวข้อ 'ศัตรูรายตัวต่อพื้นที่' ทุกตัวตั้งแต่ Act 2 (ไบโอม swamp/desert/ice/core) มี Corruption Aura ตามกฎในเอกสาร ยกเว้น Elite ที่มีเสมอทุกไบโอม. model คือโมเดลจากแพ็ก Quaternius ที่ใกล้เคียงที่สุด ไม่ได้ระบุในเอกสาร",
+
+  "feral_rootwolf": {
+    "name": "หมาป่าเถื่อน", "biome": "hub", "zone_level": 1,
+    "archetype": "brawler", "tier": "common",
+    "model": "Monkroose", "scale": 0.45, "xp": 40,
+    "signature": "คอมโบกัด 2 ฮิต"
+  },
+  "blightbat": {
+    "name": "ค้างคาวรากเน่า", "biome": "hub", "zone_level": 1,
+    "archetype": "kiter", "tier": "common",
+    "model": "Birb", "scale": 0.40, "xp": 45,
+    "signature": "คลื่นเสียงสร้างความมึนงงระยะสั้น"
+  },
+  "root_wasp": {
+    "name": "ผึ้งพิษราก", "biome": "hub", "zone_level": 1,
+    "archetype": "pack_hunter", "tier": "common",
+    "model": "Frog", "scale": 0.35, "xp": 35,
+    "signature": "ตัวเล็กจำนวนมาก ต่อยสะสมพิษ",
+    "applies_status": "venom"
+  },
+  "elder_rootbear": {
+    "name": "หมีรากเฒ่า", "biome": "hub", "zone_level": 2,
+    "archetype": "brawler", "tier": "elite",
+    "model": "Yeti", "scale": 0.62, "xp": 140,
+    "signature": "กระแทกพื้นวงกว้าง มี Windup ชัดเจน"
+  },
+
+  "tainted_leech": {
+    "name": "ปลิงยักษ์ปนเปื้อน", "biome": "swamp", "zone_level": 5,
+    "archetype": "brawler", "tier": "common",
+    "model": "Fish", "scale": 0.45, "xp": 90,
+    "signature": "ดูดเลือดฟื้น HP ตัวเอง", "lifesteal": 0.4
+  },
+  "root_mosquito": {
+    "name": "ยุงยักษ์ราก", "biome": "swamp", "zone_level": 5,
+    "archetype": "pack_hunter", "tier": "common",
+    "model": "Birb", "scale": 0.32, "xp": 85,
+    "signature": "ติด DOT ไข้จับสั่น", "applies_status": "cyclic_fever"
+  },
+  "bog_shadow_croc": {
+    "name": "จระเข้เงาหนอง", "biome": "swamp", "zone_level": 6,
+    "archetype": "brawler", "tier": "elite",
+    "model": "Dino", "scale": 0.60, "xp": 260,
+    "signature": "ลากผู้เล่นลงน้ำ (Grab ต้องกดหลุด)"
+  },
+
+  "root_sand_scorpion": {
+    "name": "แมงป่องทรายราก", "biome": "desert", "zone_level": 7,
+    "archetype": "brawler", "tier": "common",
+    "model": "Cactoro", "scale": 0.42, "xp": 110,
+    "signature": "ต่อยติดพิษสะสม", "applies_status": "venom"
+  },
+  "ash_vulture": {
+    "name": "อีแร้งเถ้าถ่าน", "biome": "desert", "zone_level": 7,
+    "archetype": "kiter", "tier": "common",
+    "model": "Birb", "scale": 0.45, "xp": 115,
+    "signature": "บินโฉบแล้วถอยระยะ"
+  },
+  "tainted_sandworm": {
+    "name": "หนอนทรายยักษ์ปนเปื้อน", "biome": "desert", "zone_level": 8,
+    "archetype": "brawler", "tier": "elite",
+    "model": "BlueDemon", "scale": 0.65, "xp": 300,
+    "signature": "โผล่จากใต้ทรายกลางวง โจมตีพื้นที่"
+  },
+
+  "ice_wolf": {
+    "name": "หมาป่าน้ำแข็ง", "biome": "ice", "zone_level": 9,
+    "archetype": "pack_hunter", "tier": "common",
+    "model": "Monkroose", "scale": 0.48, "xp": 140,
+    "signature": "เร็วกว่าเวอร์ชัน Prologue", "speed_bonus": 1.15
+  },
+  "tainted_snow_eagle": {
+    "name": "นกอินทรีหิมะปนเปื้อน", "biome": "ice", "zone_level": 9,
+    "archetype": "kiter", "tier": "common",
+    "model": "Birb", "scale": 0.50, "xp": 145,
+    "signature": "โฉบแล้วบินหนีสูง"
+  },
+  "root_ice_giant": {
+    "name": "ยักษ์น้ำแข็งราก", "biome": "ice", "zone_level": 10,
+    "archetype": "brawler", "tier": "elite",
+    "model": "Yeti", "scale": 0.75, "xp": 340,
+    "signature": "ช้าแต่ดาเมจสูง กระแทกน้ำแข็งวง", "speed_bonus": 0.7, "damage_bonus": 1.4
+  },
+
+  "living_rootling": {
+    "name": "หน่อรากมีชีวิต", "biome": "core", "zone_level": 12,
+    "archetype": "skittish", "tier": "common",
+    "model": "Bunny", "scale": 0.40, "xp": 200,
+    "signature": "ซ่อนใต้ดินก่อนโผล่ตี"
+  },
+  "blight_warden": {
+    "name": "ผู้พิทักษ์ธุลีเน่า", "biome": "core", "zone_level": 13,
+    "archetype": "kiter", "tier": "elite",
+    "model": "Orc_Skull", "scale": 0.62, "xp": 420,
+    "signature": "สลับรูปแบบโจมตีตามระยะ", "switches_range": true
+  }
+}

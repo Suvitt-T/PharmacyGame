@@ -7,12 +7,14 @@ const DEBUG_XP_PER_PRESS := 250
 
 const PLAYER_SPAWN := Vector3(6, 1, 16)
 
-## ศัตรูรากต้นไม้โลก (Prologue/Act 1) ตามเอกสาร จับคู่กับโมเดลที่ใกล้เคียงที่สุดในแพ็กที่มี
+## ศัตรูรากต้นไม้โลก (Prologue/Act 1) ค่าทั้งหมดมาจาก data/enemies.json
 const SPAWN_TABLE := [
-	{"name": "หมาป่าเถื่อน", "model": "Monkroose", "scale": 0.45, "tier": "common", "at": Vector3(10, 1, 12)},
-	{"name": "ค้างคาวรากเน่า", "model": "Birb", "scale": 0.40, "tier": "common", "at": Vector3(-11, 1, 13)},
-	{"name": "ผึ้งพิษราก", "model": "Frog", "scale": 0.38, "tier": "common", "at": Vector3(-4, 1, 21)},
-	{"name": "หมีรากเฒ่า", "model": "Yeti", "scale": 0.60, "tier": "elite", "at": Vector3(7, 1, 22)},
+	{"id": "feral_rootwolf", "at": Vector3(12, 1, 14)},
+	{"id": "blightbat", "at": Vector3(-2, 1, 25)},
+	{"id": "root_wasp", "at": Vector3(2, 1, 22)},
+	{"id": "root_wasp", "at": Vector3(10, 1, 20)},
+	{"id": "elder_rootbear", "at": Vector3(14, 1, 21)},
+	{"id": "living_rootling", "at": Vector3(3, 1, 11)},
 ]
 
 @onready var player: PlayerController = $Player
@@ -69,24 +71,37 @@ func _spawn_wave() -> void:
 
 
 func _spawn_enemy(entry: Dictionary) -> void:
+	var enemy_id: String = entry["id"]
 	var enemy: Enemy = ENEMY_SCENE.instantiate()
-	enemy.display_name = entry["name"]
-	enemy.tier = entry["tier"]
-	if entry["tier"] == "elite":
-		enemy.xp_reward = 120
-		enemy.move_speed = 2.6
+	enemy.enemy_id = enemy_id
 	# ต้องตั้งก่อน add_child เพราะ ActorVisuals สร้างโมเดลตอน _ready
 	var visuals: ActorVisuals = enemy.get_node("Visuals")
-	visuals.model_scene = load("res://assets/models/monsters/%s.gltf" % entry["model"])
-	visuals.model_scale = entry["scale"]
+	visuals.model_scene = EnemyDB.model_scene(enemy_id)
+	visuals.model_scale = EnemyDB.model_scale(enemy_id)
 	enemy_root.add_child(enemy)
 	enemy.global_position = entry["at"]
 	enemy.died.connect(_on_enemy_died)
+	enemy.loot_dropped.connect(_on_loot_dropped)
+	enemy.called_for_help.connect(_on_called_for_help)
+
+
+func _on_loot_dropped(enemy: Enemy, drops: Array) -> void:
+	var lines := LootTable.grant(drops, inventory_component)
+	if lines.is_empty():
+		return
+	hud.log_line("   ดรอป: %s" % ", ".join(lines))
+
+
+func _on_called_for_help(enemy: Enemy, responders: int) -> void:
+	if responders > 0:
+		hud.log_line("%s ร้องเรียกพวก! มา %d ตัว" % [enemy.display_name, responders])
 
 
 func _on_enemy_died(enemy: Enemy) -> void:
 	var gained := player.combatant.sheet.add_xp(enemy.xp_reward)
-	hud.log_line("ปราบ %s · +%d XP" % [enemy.display_name, enemy.xp_reward])
+	hud.log_line("ปราบ %s (%s) · +%d XP" % [
+		enemy.display_name, EnemyArchetype.display_name(enemy.archetype), enemy.xp_reward
+	])
 	if gained > 0:
 		hud.log_line("แต้ม Stat เหลือ %d แต้ม" % player.combatant.sheet.unspent_points())
 	if enemy_root.get_child_count() <= 1:
@@ -180,7 +195,7 @@ func _on_effect_ended(effect: ActiveEffect) -> void:
 func _give_starting_kit() -> void:
 	var inventory := inventory_component.inventory
 	for ingredient in PharmacyDB.all_ingredients():
-		inventory.add_ingredient((ingredient as Ingredient).id, 40)
+		inventory.add_ingredient((ingredient as Ingredient).id, 12)
 
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 1
@@ -188,7 +203,7 @@ func _give_starting_kit() -> void:
 		inventory.add_equipment(ItemDB.roll_equipment(base_id, ItemTier.Tier.COMMON, 1, rng))
 	while inventory_component.equip_from_bag(0):
 		pass
-	hud.log_line("ได้ชุดเริ่มต้นและวัตถุดิบครบ 8 ชนิด อย่างละ 40 ชิ้น")
+	hud.log_line("ได้ชุดเริ่มต้นและวัตถุดิบอย่างละ 12 ชิ้น — ที่เหลือเก็บจากศัตรู")
 
 
 func _roll_loot() -> void:

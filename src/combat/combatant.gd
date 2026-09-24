@@ -22,9 +22,13 @@ const STAMINA_REGEN_DELAY := 0.8
 @export var starting_level: int = 1
 @export var character_class: CharacterClass.Id = CharacterClass.Id.NONE
 
-## Phase 3 จะแทนด้วยค่าจากอุปกรณ์จริง ตอนนี้ตั้งตรง ๆ ไว้ก่อน
 @export var weapon_base_damage: float = 12.0
 @export var defense: float = 0.0
+
+## ศัตรูใช้ HP จากตาราง Tier ตรง ๆ ไม่ผ่านสูตร VIT ของผู้เล่น
+## เพราะสูตร HP = 80 + VIT*8 + Lv*5 มีพื้นต่ำสุด 125 จึงทำ HP 60 ตามตารางไม่ได้
+## ค่า 0 แปลว่าใช้สูตรปกติ
+@export var max_hp_override: float = 0.0
 
 var sheet: CharacterSheet
 var current_hp: float = 0.0
@@ -68,9 +72,14 @@ func _regenerate(delta: float) -> void:
 			set_stamina(current_stamina + STAMINA_REGEN_PER_SECOND * delta)
 
 
+## HP สูงสุดจริง เคารพ override ของศัตรูก่อนเสมอ
+func max_hp() -> float:
+	return max_hp_override if max_hp_override > 0.0 else sheet.max_hp()
+
+
 func restore_all() -> void:
 	var was_dead := not is_alive
-	current_hp = sheet.max_hp()
+	current_hp = max_hp()
 	current_mana = sheet.max_mana()
 	current_stamina = sheet.max_stamina()
 	is_alive = true
@@ -83,8 +92,8 @@ func restore_all() -> void:
 # --- ทรัพยากร ---
 
 func set_hp(value: float) -> void:
-	current_hp = clampf(value, 0.0, sheet.max_hp())
-	hp_changed.emit(current_hp, sheet.max_hp())
+	current_hp = clampf(value, 0.0, max_hp())
+	hp_changed.emit(current_hp, max_hp())
 	if current_hp <= 0.0 and is_alive:
 		is_alive = false
 		died.emit()
@@ -179,6 +188,6 @@ func _on_leveled_up(_new_level: int) -> void:
 
 
 func emit_all() -> void:
-	hp_changed.emit(current_hp, sheet.max_hp())
+	hp_changed.emit(current_hp, max_hp())
 	mana_changed.emit(current_mana, sheet.max_mana())
 	stamina_changed.emit(current_stamina, sheet.max_stamina())
